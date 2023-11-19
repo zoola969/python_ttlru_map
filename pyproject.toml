@@ -1,0 +1,185 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling~=1.7"]
+
+[project]
+authors = [
+    {email = "zoola969@gmail.com", name = "Alexander Dmitriev"},
+]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries",
+    "Typing :: Typed",
+]
+dependencies = []
+description = ""  # FIXME
+dynamic = ["version"]
+keywords = ["dict", "expire", "expired", "time-to-live", "ttl"]
+license = {file = "LICENSE"}
+name = "ttl_dict"
+readme = "README.md"
+requires-python = ">=3.8,<=3.12"
+
+[project.optional-dependencies]
+dev = [
+    "coverage~=7.3",
+    "hatch~=1.7",
+    "ipython~=8.17",
+    "mypy~=1.7",
+    "pip-tools~=7.3",
+    "pytest~=7.4",
+    "sphinx~=7.2",
+]
+
+[tool.black]
+color = true
+line-length = 120
+target-version = ['py38']
+
+[tool.hatch.version]
+path = "ttl_dict/__init__.py"
+
+[tool.isort]
+float_to_top = true
+include_trailing_comma = true
+line_length = 120
+multi_line_output = 3
+use_parentheses = true
+
+[tool.mypy]
+strict = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--code-highlight=yes",
+    "--color=yes",
+    "--strict-config",
+    "--strict-markers",
+    "-vv",
+]
+
+[tool.ruff]
+allowed-confusables = ["ρ", "−", "∗"]
+extend-exclude = ["alembic/versions/*"]
+ignore = [
+    "A003",  # Class attribute {name} is shadowing a python builtin
+    "AIR",  # airflow
+    "ANN101",  # Missing type annotation for `self` in method
+    "ANN102",  # Missing type annotation for `cls` in classmethod
+    "CPY",  # flake8-copyright
+    "D107",  # Missing docstring in __init__
+    "D203",  # 1 blank line required before class docstring
+    "D213",  # Multi-line docstring summary should start at the second line
+    "PLC1901",  # compare-to-empty-string
+    "PYI041",  # redundant-numeric-union. Use `float` instead of `int | float`
+]
+ignore-init-module-imports = true
+line-length = 120
+preview = true
+select = [
+    "A",  # flake8-builtins
+    "ANN",  # flake8-annotations
+    "ARG",  # flake8-unused-arguments
+    "ASYNC",  # flake8-async
+    "B",  # flake8-bugbear
+    "BLE",  # flake8-blind-except
+    "C4",  # flake8-comprehensions
+    "C90",  # mccabe
+    "COM",  # flake8-commas
+    "D",  # pydocstyle
+    "E",  # pycodestyle error
+    "EM",  # flake8-errmsg
+    "ERA",  # eradicate
+    "EXE",  # flake8-executable
+    "F",  # pyflakes
+    "FA",  # flake8-future-annotations
+    "FLY",  # flynt
+    "FURB",  # refurb
+    "G",  # flake8-logging-format
+    "ICN",  # flake8-import-conventions
+    "INP",  # flake8-no-pep420
+    "INT",  # flake8-gettext
+    "ISC",  # flake8-implicit-str-concat
+    "LOG",  # flake8-logging
+    "N",  # pep8-naming
+    "PERF",  # perflint
+    "PGH",  # pygrep-hooks
+    "PIE",  # flake8-pie
+    "PL",  # pylint
+    "PT",  # flake8-pytest-style
+    "PTH",  # flake8-use-pathlib
+    "PYI",  # flake8-pyi
+    "Q",  # flake8-quotes
+    "RET",  # flake8-return
+    "RSE",  # flake8-raise
+    "RUF",  # ruff
+    "S",  # flake8-bandit
+    "SIM",  # flake8-simplify
+    "SLF",  # flake8-self
+    "SLOT",  # flake8-slots
+    "T10",  # flake8-debugger
+    "T20",  # flake8-print
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
+    "TRY",  # tryceratops
+    "UP",  # pyupgrade
+    "W",  # pycodestyle warning
+    "YTT",  # flake8-2020
+]
+show-fixes = true
+show-source = true
+target-version = "py38"
+
+[tool.ruff.flake8-comprehensions]
+allow-dict-calls-with-keyword-arguments = true
+
+[tool.ruff.flake8-pytest-style]
+parametrize-values-type = "list"
+
+[tool.ruff.flake8-type-checking]
+strict = true
+
+[tool.ruff.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = [
+    "F401",  # imported but unused
+]
+"tests/*" = [
+    "ANN201",  # Missing return type annotation for public function
+    "PLR2004",  # Magic value in comparison
+    "S101",  # Use of assert detected
+    "S311",  # Standard pseudo-random generators are not suitable for security/cryptographic purposes
+]
+
+[tool.ruff.pylint]
+allow-magic-value-types = []
+max-args = 10
+
+[tool.tomlsort]
+all = true
+ignore_case = true
+in_place = true
+no_block_comments = false
+no_comments = false
+no_footer_comments = false
+no_header_comments = false
+no_inline_comments = false
+no_sort_tables = false
+sort_inline_arrays = true
+sort_inline_tables = true
+sort_table_keys = true
+spaces_before_inline_comment = 2
+spaces_indent_inline_array = 4
+trailing_comma_inline_array = true
