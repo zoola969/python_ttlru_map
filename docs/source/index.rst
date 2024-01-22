@@ -1,8 +1,3 @@
-.. ttl_dict documentation master file, created by
-sphinx-quickstart on Sun Nov 19 17:18:15 2023.
-You can adapt this file completely to your liking, but it should at least
-contain the root `toctree` directive.
-
 Welcome to ttl_dict's documentation!
 ====================================
 **ttl_dict** is a Python library which provides a hash table with a time-to-live (TTL) for each key-value pair.
@@ -17,7 +12,7 @@ Welcome to ttl_dict's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+Look at the :doc:`description` section for a more detailed description of the project.
 Check out the :doc:`usage` section for further information, including how to
 :ref:`install <installation>` the project.
 
@@ -35,5 +30,6 @@ Contents
 
 .. toctree::
 
+    description
     usage
     api

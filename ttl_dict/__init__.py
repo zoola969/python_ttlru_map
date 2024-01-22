@@ -1,4 +1,4 @@
-from ._ttl_dict import TTLDict, hui
+from ._ttl_dict import TTLDict
 
 __version__ = "0.0.1"
 

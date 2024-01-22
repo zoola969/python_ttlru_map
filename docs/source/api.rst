@@ -2,6 +2,7 @@ API
 ===
 
 .. autosummary::
-   :toctree: generated
+    :toctree: generated
+    :recursive:
 
-   ttl_dict._ttl_dict
+    ttl_dict.TTLDict
