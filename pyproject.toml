@@ -31,11 +31,14 @@ readme = "README.md"
 requires-python = ">=3.8,<=3.12"
 
 [project.optional-dependencies]
+benchmarks = [
+    "perfplot",
+]
 dev = [
     "coverage~=7.3",
     "hatch~=1.7",
     "ipython~=8.17",
-    "mypy~=1.8",
+    "mypy~=1.9",
     "pip-tools~=7.3",
     "pytest~=7.4",
     "sphinx~=7.2",

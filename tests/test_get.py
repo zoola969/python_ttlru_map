@@ -1,38 +1,60 @@
-import time
-from collections import deque
 from datetime import timedelta
 from unittest.mock import patch
 
+import pytest
+
+from tests.utils import LockMock
 from ttl_dict import TTLDict
-from ttl_dict._ttl_dict import _DequeKey, _TTLDictValue
+from ttl_dict._ttl_dict import DoubleLinkedListNode, _DictValue, _LinkedListValue
 
 
-def test__get_item():
-    ttl_dict = TTLDict(ttl=timedelta(days=1), update_ttl_on_get=False)
-    key = "test"
-    value = "value"
-    now_time = time.time()
+@pytest.mark.parametrize("update_ttl_on_get", [True, False])
+def test_get(update_ttl_on_get: bool):
+    d = TTLDict(ttl=timedelta(seconds=1000), update_ttl_on_get=update_ttl_on_get)
+    lock_mock = LockMock()
+    d._lock = lock_mock
+    key = 1
+    value = 2
+    time_ = 10
 
-    ttl_dict._dict[key] = _TTLDictValue(value=value, time_=now_time)
-    ttl_dict._deque.append(_DequeKey(time_=now_time, key=key))
+    node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    d._dict[key] = _DictValue(node=node, value=value)
+    d._ll_head = node
+    d._ll_end = node
 
-    with patch("time.time", return_value=now_time):
-        assert ttl_dict[key] == value
+    with (
+        patch("time.time", return_value=time_) as time_mock,
+        patch.object(TTLDict, "_setitem", wraps=d._setitem) as setitem_mock,
+        patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock,
+    ):
+        assert d[key] == value
+        time_mock.assert_called_once()
+        update_by_ttl_mock.assert_called_once_with(current_time=time_)
+        if update_ttl_on_get:
+            setitem_mock.assert_called_once_with(key, value, time_)
+        else:
+            setitem_mock.assert_not_called()
 
-        assert ttl_dict._dict == {key: _TTLDictValue(value=value, time_=now_time)}
-        assert ttl_dict._deque == deque([_DequeKey(time_=now_time, key=key)])
+
+def test_get__item_not_found():
+    d = TTLDict(ttl=timedelta(seconds=1000))
+
+    with pytest.raises(KeyError):
+        _ = d[1]
 
 
-def test__get_item__update_ttl_on_get():
-    ttl_dict = TTLDict(ttl=timedelta(days=1), update_ttl_on_get=True)
-    key = "test"
-    value = "value"
-    now_time = time.time()
-    next_time = now_time + 100
+def test_get__item_expired():
+    ttl = timedelta(seconds=100)
+    d = TTLDict(ttl=ttl)
+    key = 1
+    value = 2
+    time_ = 10
 
-    with patch("time.time", side_effect=[now_time, next_time]):
-        ttl_dict[key] = value
+    node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    d._dict[key] = _DictValue(node=node, value=value)
+    d._ll_head = node
+    d._ll_end = node
 
-        assert ttl_dict[key] == value
-        assert ttl_dict._dict == {key: _TTLDictValue(value=value, time_=next_time)}
-        assert ttl_dict._deque == deque([_DequeKey(time_=now_time, key=key), _DequeKey(time_=next_time, key=key)])
+    with patch("time.time", return_value=time_ + ttl.total_seconds() + 1):
+        with pytest.raises(KeyError):
+            _ = d[key]

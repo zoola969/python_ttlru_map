@@ -1,40 +1,49 @@
 import time
-from collections import deque
-from collections.abc import Iterator, MutableMapping
+from collections.abc import Hashable
 from datetime import timedelta
 from threading import Lock
-from typing import Deque, Generic, Hashable, NamedTuple, TypeVar
+from typing import Generic, Iterator, MutableMapping, NamedTuple, TypeVar
 
-_K = TypeVar("_K", bound=Hashable)
-_V = TypeVar("_V")
+from ttl_dict._exceptions import TTLDictInvalidConfigError
+from ttl_dict._linked_list import DoubleLinkedListNode
+
+_TKey = TypeVar("_TKey", bound=Hashable)
+_TValue = TypeVar("_TValue")
 
 
-class _DequeKey(Generic[_K], NamedTuple):
+class _LinkedListValue(Generic[_TKey], NamedTuple):
     time_: float
-    key: _K
+    key: _TKey
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(time_={self.time_}, key={self.key})"
 
 
-class _TTLDictValue(Generic[_V], NamedTuple):
-    value: _V
-    time_: float
+class _DictValue(Generic[_TKey, _TValue], NamedTuple):
+    node: DoubleLinkedListNode[_LinkedListValue[_TKey]]
+    value: _TValue
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(node={self.node}, value={self.value})"
 
 
-class TTLDict(MutableMapping[_K, _V]):
+class TTLDict(MutableMapping[_TKey, _TValue]):
     __slots__ = (
         "_dict",
-        "_deque",
+        "_ll_end",
+        "_ll_head",
+        "_lock",
         "_max_size",
         "_ttl",
         "_update_ttl_on_get",
-        "_lock",
     )
 
     def __init__(
         self,
         *,
-        ttl: timedelta,
-        max_size: int = 0,
-        update_ttl_on_get: bool = True,
+        ttl: timedelta | None,
+        max_size: int | None = None,
+        update_ttl_on_get: bool = False,
     ):
         """A dictionary that removes items after a certain time.
 
@@ -42,53 +51,102 @@ class TTLDict(MutableMapping[_K, _V]):
         :param ttl: the time to live for each item in the dictionary.
         :param update_ttl_on_get: whether to update the time to live when getting an item.
         """
-        self._dict: dict[_K, _TTLDictValue[_V]] = {}
-        self._deque: Deque[_DequeKey[_K]] = deque()
+        self._validate_config(max_size, ttl, update_ttl_on_get)
+        self._dict: dict[_TKey, _DictValue[_TKey, _TValue]] = {}
+        self._ll_head: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
+        self._ll_end: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
         self._max_size = max_size
         self._ttl = ttl
         self._update_ttl_on_get = update_ttl_on_get
         self._lock = Lock()
 
+    def _validate_config(
+        self,
+        max_size: int | None,
+        ttl: timedelta | None,
+        update_ttl_on_get: bool,
+    ) -> None:
+        if max_size is None and ttl is None:
+            raise TTLDictInvalidConfigError("max_size and ttl cannot be None at the same time.")
+        if max_size is not None and max_size <= 0:
+            raise TTLDictInvalidConfigError("max_size must be greater than 0.")
+        if ttl is not None and ttl.total_seconds() <= 0:
+            raise TTLDictInvalidConfigError("ttl must be greater than 0.")
+        if ttl is None and update_ttl_on_get:
+            raise TTLDictInvalidConfigError("update_ttl_on_get cannot be True when ttl is None.")
+
     def _update_by_ttl(self, current_time: float | None = None) -> None:
         """Remove items that have expired."""
         current_time = current_time if current_time is not None else time.time()
-        while len(self._deque) > 0:
-            latest_item = self._deque[0]
-            if latest_item.time_ + self._ttl.total_seconds() >= current_time:
+        while self._ll_head is not None:
+            if self._ll_head.value.time_ + self._ttl.total_seconds() >= current_time:
                 break
-            else:
-                self._deque.popleft()
-                self._delitem(latest_item.key, time_=latest_item.time_)
+            del self._dict[self._ll_head.value.key]
+            self._pop_ll_node(self._ll_head)
 
     def _update_by_size(self) -> None:
         """Remove the oldest items that exceed the maximum size."""
-        while len(self._dict) > self._max_size:
-            latest_item = self._deque.popleft()
-            self._delitem(latest_item.key, time_=latest_item.time_)
+        if self._max_size is None:
+            return
+        while len(self._dict) > self._max_size and self._ll_head is not None:
+            del self._dict[self._ll_head.value.key]
+            self._pop_ll_node(self._ll_head)
 
-    def _setitem(self, __key: _K, __value: _V, time_: float) -> None:
-        self._dict[__key] = _TTLDictValue(value=__value, time_=time_)
-        self._deque.append(_DequeKey(time_=time_, key=__key))
+    def _pop_ll_node(self, node: DoubleLinkedListNode[_LinkedListValue[_TKey]]) -> None:
+        """Pop a node from the linked list."""
+        if node is self._ll_head:
+            self._ll_head = node.next
+        if node is self._ll_end:
+            self._ll_end = node.prev
 
-    def _delitem(self, __key: _K, time_: float) -> None:
-        item = self._dict.get(__key, None)
-        if item is not None and item.time_ == time_:
-            self._dict.pop(__key, None)
+        if node.next is not None:
+            node.next.prev = node.prev
+        if node.prev is not None:
+            node.prev.next = node.next
+        node.next = None
+        node.prev = None
 
-    def __setitem__(self, __key: _K, __value: _V) -> None:
+    def _put_node_to_end(self, node: DoubleLinkedListNode[_LinkedListValue[_TKey]]) -> None:
+        """Put a node to the end of the linked list."""
+        if self._ll_end is None:
+            self._ll_head = node
+            self._ll_end = node
+        else:
+            self._ll_end.next = node
+            node.prev = self._ll_end
+            self._ll_end = node
+
+    def _setitem(self, __key: _TKey, __value: _TValue, time_: float) -> None:
+        """Set an item in the dictionary and put it to the end of the linked list."""
+        new_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=__key))
+
+        if (item := self._dict.get(__key, None)) is not None:
+            self._pop_ll_node(item.node)
+            self._put_node_to_end(new_node)
+        else:
+            self._put_node_to_end(new_node)
+
+        self._dict[__key] = _DictValue(value=__value, node=new_node)
+
+    def _delitem(self, item: _DictValue[_TKey, _TValue]) -> None:
+        """Delete an item from the dictionary and the linked list."""
+        del self._dict[item.node.value.key]
+        self._pop_ll_node(item.node)
+
+    def __setitem__(self, __key: _TKey, __value: _TValue) -> None:
         with self._lock:
             time_ = time.time()
             self._setitem(__key, __value, time_)
             self._update_by_ttl(current_time=time_)
-            if self._max_size > 0:
-                self._update_by_size()
+            self._update_by_size()
 
-    def __delitem__(self, __key: _K) -> None:
+    def __delitem__(self, __key: _TKey) -> None:
         with self._lock:
-            self._dict.pop(__key, None)
+            item = self._dict[__key]
+            self._delitem(item)
             self._update_by_ttl()
 
-    def __getitem__(self, __key: _K) -> _V:
+    def __getitem__(self, __key: _TKey) -> _TValue:
         with self._lock:
             time_ = time.time()
             self._update_by_ttl(current_time=time_)
@@ -102,5 +160,5 @@ class TTLDict(MutableMapping[_K, _V]):
             self._update_by_ttl()
             return len(self._dict)
 
-    def __iter__(self) -> Iterator[_K]:
+    def __iter__(self) -> Iterator[_TKey]:
         return iter(self._dict)
