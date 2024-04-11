@@ -1,8 +1,9 @@
 import time
 from collections.abc import Hashable
+from dataclasses import dataclass
 from datetime import timedelta
 from threading import Lock
-from typing import Generic, Iterator, MutableMapping, NamedTuple, Optional, TypeVar
+from typing import Generic, Iterator, MutableMapping, Optional, TypeVar
 
 from ttl_dict._exceptions import TTLDictInvalidConfigError
 from ttl_dict._linked_list import DoubleLinkedListNode
@@ -11,7 +12,8 @@ _TKey = TypeVar("_TKey", bound=Hashable)
 _TValue = TypeVar("_TValue")
 
 
-class _LinkedListValue(Generic[_TKey], NamedTuple):
+@dataclass(frozen=True, slots=True)
+class _LinkedListValue(Generic[_TKey]):
     time_: float
     key: _TKey
 
@@ -19,7 +21,8 @@ class _LinkedListValue(Generic[_TKey], NamedTuple):
         return f"{self.__class__.__name__}(time_={self.time_}, key={self.key})"
 
 
-class _DictValue(Generic[_TKey, _TValue], NamedTuple):
+@dataclass(frozen=True, slots=True)
+class _DictValue(Generic[_TKey, _TValue]):
     node: DoubleLinkedListNode[_LinkedListValue[_TKey]]
     value: _TValue
 
@@ -77,6 +80,8 @@ class TTLDict(MutableMapping[_TKey, _TValue]):
 
     def _update_by_ttl(self, current_time: Optional[float] = None) -> None:
         """Remove items that have expired."""
+        if self._ttl is None:
+            return
         current_time = current_time if current_time is not None else time.time()
         while self._ll_head is not None:
             if self._ll_head.value.time_ + self._ttl.total_seconds() >= current_time:

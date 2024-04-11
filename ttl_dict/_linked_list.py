@@ -1,4 +1,4 @@
-from typing import Generic, Optional, TypeGuard, TypeVar
+from typing import Generic, Optional, TypeVar
 
 _T = TypeVar("_T")
 
@@ -13,8 +13,8 @@ class DoubleLinkedListNode(Generic[_T]):
 
     def __init__(self, value: _T):
         self._value = value
-        self.next: Optional["DoubleLinkedListNode"] = None
-        self.prev: Optional["DoubleLinkedListNode"] = None
+        self.next: Optional["DoubleLinkedListNode[_T]"] = None
+        self.prev: Optional["DoubleLinkedListNode[_T]"] = None
 
     @property
     def value(self) -> _T:
@@ -25,13 +25,7 @@ class DoubleLinkedListNode(Generic[_T]):
             return False
         if self is other:
             return True
-        if not tg(self, type(self._value)):
-            return False
-        return self._value == other._value
+        return self._value == other._value  # type: ignore[no-any-return]
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(value={self._value})"
-
-
-def tg(value: DoubleLinkedListNode[_T], type_: type[_T]) -> TypeGuard[DoubleLinkedListNode[_T]]:
-    return type(value.value) is type_
