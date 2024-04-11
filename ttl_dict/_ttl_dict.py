@@ -2,7 +2,7 @@ import time
 from collections.abc import Hashable
 from datetime import timedelta
 from threading import Lock
-from typing import Generic, Iterator, MutableMapping, NamedTuple, TypeVar
+from typing import Generic, Iterator, MutableMapping, NamedTuple, Optional, TypeVar
 
 from ttl_dict._exceptions import TTLDictInvalidConfigError
 from ttl_dict._linked_list import DoubleLinkedListNode
@@ -41,8 +41,8 @@ class TTLDict(MutableMapping[_TKey, _TValue]):
     def __init__(
         self,
         *,
-        ttl: timedelta | None,
-        max_size: int | None = None,
+        ttl: Optional[timedelta],
+        max_size: Optional[int] = None,
         update_ttl_on_get: bool = False,
     ):
         """A dictionary that removes items after a certain time.
@@ -53,8 +53,8 @@ class TTLDict(MutableMapping[_TKey, _TValue]):
         """
         self._validate_config(max_size, ttl, update_ttl_on_get)
         self._dict: dict[_TKey, _DictValue[_TKey, _TValue]] = {}
-        self._ll_head: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
-        self._ll_end: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
+        self._ll_head: Optional[DoubleLinkedListNode[_LinkedListValue[_TKey]]] = None
+        self._ll_end: Optional[DoubleLinkedListNode[_LinkedListValue[_TKey]]] = None
         self._max_size = max_size
         self._ttl = ttl
         self._update_ttl_on_get = update_ttl_on_get
@@ -62,8 +62,8 @@ class TTLDict(MutableMapping[_TKey, _TValue]):
 
     def _validate_config(
         self,
-        max_size: int | None,
-        ttl: timedelta | None,
+        max_size: Optional[int],
+        ttl: Optional[timedelta],
         update_ttl_on_get: bool,
     ) -> None:
         if max_size is None and ttl is None:
@@ -75,7 +75,7 @@ class TTLDict(MutableMapping[_TKey, _TValue]):
         if ttl is None and update_ttl_on_get:
             raise TTLDictInvalidConfigError("update_ttl_on_get cannot be True when ttl is None.")
 
-    def _update_by_ttl(self, current_time: float | None = None) -> None:
+    def _update_by_ttl(self, current_time: Optional[float] = None) -> None:
         """Remove items that have expired."""
         current_time = current_time if current_time is not None else time.time()
         while self._ll_head is not None:

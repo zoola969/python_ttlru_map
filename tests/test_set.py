@@ -15,23 +15,21 @@ def test_set__first():
     value = 2
     time_ = 10
     expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
-    with (
-        patch("time.time", return_value=time_) as time_mock,
-        patch.object(TTLDict, "_setitem", wraps=d._setitem) as setitem_mock,
-        patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock,
-        patch.object(TTLDict, "_update_by_size", wraps=d._update_by_size) as update_by_size_mock,
-    ):
-        d[key] = value
-        time_mock.assert_called_once()
-        setitem_mock.assert_called_once_with(key, value, time_)
-        update_by_ttl_mock.assert_called_once_with(current_time=time_)
-        update_by_size_mock.assert_called_once()
-        lock_mock.__enter__.assert_called_once()
-        lock_mock.__exit__.assert_called_once()
-        assert d[key] == value
-        assert d._dict == {key: _DictValue(value=value, node=expected_node)}
-        assert d._ll_head == expected_node
-        assert d._ll_end == expected_node
+    with patch("time.time", return_value=time_) as time_mock:
+        with patch.object(TTLDict, "_setitem", wraps=d._setitem) as setitem_mock:
+            with patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock:
+                with patch.object(TTLDict, "_update_by_size", wraps=d._update_by_size) as update_by_size_mock:
+                    d[key] = value
+                    time_mock.assert_called_once()
+                    setitem_mock.assert_called_once_with(key, value, time_)
+                    update_by_ttl_mock.assert_called_once_with(current_time=time_)
+                    update_by_size_mock.assert_called_once()
+                    lock_mock.__enter__.assert_called_once()
+                    lock_mock.__exit__.assert_called_once()
+                    assert d[key] == value
+                    assert d._dict == {key: _DictValue(value=value, node=expected_node)}
+                    assert d._ll_head == expected_node
+                    assert d._ll_end == expected_node
 
 
 def test_set__second():
@@ -46,27 +44,25 @@ def test_set__second():
     new_value = 20
     time_ = 10
     expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=new_key))
-    with (
-        patch("time.time", return_value=time_) as time_mock,
-        patch.object(TTLDict, "_setitem", wraps=d._setitem) as setitem_mock,
-        patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock,
-        patch.object(TTLDict, "_update_by_size", wraps=d._update_by_size) as update_by_size_mock,
-    ):
-        d[new_key] = new_value
-        time_mock.assert_called_once()
-        setitem_mock.assert_called_once_with(new_key, new_value, time_)
-        update_by_ttl_mock.assert_called_once_with(current_time=time_)
-        update_by_size_mock.assert_called_once()
-        lock_mock.__enter__.assert_called_once()
-        lock_mock.__exit__.assert_called_once()
-        assert d[new_key] == new_value
-        end_node = d._dict[new_key].node
-        assert expected_node == end_node
-        assert d._dict == {
-            head_key: head_item,
-            new_key: _DictValue(value=new_value, node=end_node),
-        }
-        assert d._ll_head is head_item.node
-        assert d._ll_end is end_node
-        assert head_item.node.next == end_node
-        assert end_node.prev == head_item.node
+    with patch("time.time", return_value=time_) as time_mock:
+        with patch.object(TTLDict, "_setitem", wraps=d._setitem) as setitem_mock:
+            with patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock:
+                with patch.object(TTLDict, "_update_by_size", wraps=d._update_by_size) as update_by_size_mock:
+                    d[new_key] = new_value
+                    time_mock.assert_called_once()
+                    setitem_mock.assert_called_once_with(new_key, new_value, time_)
+                    update_by_ttl_mock.assert_called_once_with(current_time=time_)
+                    update_by_size_mock.assert_called_once()
+                    lock_mock.__enter__.assert_called_once()
+                    lock_mock.__exit__.assert_called_once()
+                    assert d[new_key] == new_value
+                    end_node = d._dict[new_key].node
+                    assert expected_node == end_node
+                    assert d._dict == {
+                        head_key: head_item,
+                        new_key: _DictValue(value=new_value, node=end_node),
+                    }
+                    assert d._ll_head is head_item.node
+                    assert d._ll_end is end_node
+                    assert head_item.node.next == end_node
+                    assert end_node.prev == head_item.node

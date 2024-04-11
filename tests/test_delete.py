@@ -23,17 +23,15 @@ def test_delete():
     d._ll_head = node
     d._ll_end = node
 
-    with (
-        patch.object(TTLDict, "_delitem", wraps=d._delitem) as delitem_mock,
-        patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock,
-    ):
-        del d[key]
-        assert d._dict == {}
-        assert d._ll_head is None
-        assert d._ll_end is None
+    with patch.object(TTLDict, "_delitem", wraps=d._delitem) as delitem_mock:
+        with patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock:
+            del d[key]
+            assert d._dict == {}
+            assert d._ll_head is None
+            assert d._ll_end is None
 
-        delitem_mock.assert_called_once_with(item)
-        update_by_ttl_mock.assert_called_once_with()
+            delitem_mock.assert_called_once_with(item)
+            update_by_ttl_mock.assert_called_once_with()
 
 
 def test_delete__item_not_found():

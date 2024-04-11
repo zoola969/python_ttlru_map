@@ -1,4 +1,4 @@
-from typing import Generic, Self, TypeGuard, TypeVar
+from typing import Generic, Optional, TypeGuard, TypeVar
 
 _T = TypeVar("_T")
 
@@ -13,8 +13,8 @@ class DoubleLinkedListNode(Generic[_T]):
 
     def __init__(self, value: _T):
         self._value = value
-        self.next: Self | None = None
-        self.prev: Self | None = None
+        self.next: Optional["DoubleLinkedListNode"] = None
+        self.prev: Optional["DoubleLinkedListNode"] = None
 
     @property
     def value(self) -> _T:

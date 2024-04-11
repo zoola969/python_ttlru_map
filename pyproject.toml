@@ -32,7 +32,7 @@ requires-python = ">=3.8,<=3.13"
 
 [project.optional-dependencies]
 benchmarks = [
-    "perfplot",
+    "perfplot~=0.10",
 ]
 build = [
     "hatch~=1.7",
