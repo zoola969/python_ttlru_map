@@ -39,3 +39,12 @@ def test_update_by_ttl__expired_head():
     assert d._ll_head == node_2
     assert d._ll_end == node_2
     assert d._dict == {k2: _DictValue(node=node_2, value=v2)}
+
+
+def test_update_by_ttl__unlimited_ttl():
+    size = 1000
+    d = TTLDict(ttl=None, max_size=size)
+    for i in range(size):
+        d[i] = i
+    d._update_by_ttl()
+    assert len(d) == size

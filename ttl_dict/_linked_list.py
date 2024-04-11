@@ -27,5 +27,5 @@ class DoubleLinkedListNode(Generic[_T]):
             return True
         return self._value == other._value  # type: ignore[no-any-return]
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return f"{self.__class__.__name__}(value={self._value})"

@@ -17,7 +17,7 @@ class _LinkedListValue(Generic[_TKey]):
     time_: float
     key: _TKey
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return f"{self.__class__.__name__}(time_={self.time_}, key={self.key})"
 
 
@@ -26,7 +26,7 @@ class _DictValue(Generic[_TKey, _TValue]):
     node: DoubleLinkedListNode[_LinkedListValue[_TKey]]
     value: _TValue
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return f"{self.__class__.__name__}(node={self.node}, value={self.value})"
 
 
