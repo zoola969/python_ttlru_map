@@ -12,8 +12,10 @@ _TKey = TypeVar("_TKey", bound=Hashable)
 _TValue = TypeVar("_TValue")
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class _LinkedListValue(Generic[_TKey]):
+    __slots__ = ("key", "time_")
+
     time_: float
     key: _TKey
 
@@ -21,8 +23,9 @@ class _LinkedListValue(Generic[_TKey]):
         return f"{self.__class__.__name__}(time_={self.time_}, key={self.key})"
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class _DictValue(Generic[_TKey, _TValue]):
+    __slots__ = ("node", "value")
     node: DoubleLinkedListNode[_LinkedListValue[_TKey]]
     value: _TValue
 
