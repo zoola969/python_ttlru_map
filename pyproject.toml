@@ -46,6 +46,10 @@ test = [
     "pytest~=7.4",
 ]
 
+[project.urls]
+Homepage = "https://github.com/zoola969/python_ttl_dict"
+Issues = "https://github.com/zoola969/python_ttl_dict/issues"
+
 [tool.black]
 color = true
 line-length = 120
