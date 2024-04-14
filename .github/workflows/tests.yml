@@ -24,6 +24,8 @@ jobs:
           allow-prereleases: true
       - name: "Install dependencies"
         run: "pip install -U pip && pip install .[test]"
+      - name: "Run mypy"
+        run: mypy ttl_dict
       - name: "Run tests"
         run: "coverage run -m pytest tests/"
       - name: "Enforce coverage"

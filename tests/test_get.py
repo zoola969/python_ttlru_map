@@ -22,16 +22,18 @@ def test_get(update_ttl_on_get: bool):
     d._ll_head = node
     d._ll_end = node
 
-    with patch("time.time", return_value=time_) as time_mock:
-        with patch.object(TTLDict, "_setitem", wraps=d._setitem) as setitem_mock:
-            with patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock:
-                assert d[key] == value
-                time_mock.assert_called_once()
-                update_by_ttl_mock.assert_called_once_with(current_time=time_)
-                if update_ttl_on_get:
-                    setitem_mock.assert_called_once_with(key, value, time_)
-                else:
-                    setitem_mock.assert_not_called()
+    with patch("time.time", return_value=time_) as time_mock, patch.object(
+        TTLDict,
+        "_setitem",
+        wraps=d._setitem,
+    ) as setitem_mock, patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock:
+        assert d[key] == value
+        time_mock.assert_called_once()
+        update_by_ttl_mock.assert_called_once_with(current_time=time_)
+        if update_ttl_on_get:
+            setitem_mock.assert_called_once_with(key, value, time_)
+        else:
+            setitem_mock.assert_not_called()
 
 
 def test_get__item_not_found():
@@ -53,6 +55,6 @@ def test_get__item_expired():
     d._ll_head = node
     d._ll_end = node
 
-    with patch("time.time", return_value=time_ + ttl.total_seconds() + 1):
+    with patch("time.time", return_value=time_ + ttl.total_seconds() + 1):  # noqa: SIM117
         with pytest.raises(KeyError):
             _ = d[key]

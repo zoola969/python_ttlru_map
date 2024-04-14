@@ -1,1 +1,61 @@
-# python_ttl_dict
+# Python TTL Dict
+
+[![Documentation Status](https://readthedocs.org/projects/python-ttl-dict/badge/?version=latest)](https://python-ttl-dict.readthedocs.io/en/latest/?badge=latest)
+[![license](https://img.shields.io/github/license/zoola969/python_ttl_dict.svg)](https://github.com/zoola969/python_ttl_dict/blob/main/LICENSE)
+![tests](https://github.com/zoola969/python_ttl_dict/actions/workflows/tests.yml/badge.svg?branch=master)
+
+
+### Installation
+
+Installation is available using `pip install python_ttl_dict`.
+
+### Core Features
+
+* **TTL Dict**: A **thread-safe** dictionary that automatically removes keys after a certain amount of time or if max
+  size is reached.
+* It can be used as a simple **in-memory cache**.
+* **Simple** - The **TTLDict** derives **MutableMapping** and implements the same interface as the built-in **dict**
+  class. It can be used as a drop-in replacement for **dict**.
+* **Efficient** - The **TTLDict** is designed to be efficient in terms of both time and space complexity.
+* **Thread-safe** - The **TTLDict** is thread-safe. It can be used in multithreaded applications without any additional
+  synchronization.
+* **Lazy** - The **TTLDict** is lazy. It does not spawn any additional threads or processes. Computing the time-to-live
+  is done only when the **TTLDict** is accessed.
+* **Zero dependencies** - The **TTLDict** has no dependencies other than the Python standard library.
+* **LRU support** - The **TTLDict** supports LRU (least recently used) eviction policy. It can be configured to evict
+  either the last set item or the least recently accessed item.
+
+
+### Usage Examples
+
+```python
+from datetime import timedelta
+from time import sleep
+
+from ttl_dict import TTLDict
+
+cache: TTLDict[str, str] = TTLDict(ttl=timedelta(seconds=10))
+
+cache['key'] = 'value'
+print(cache['key'])  # 'value'
+
+# Wait for 10 seconds
+sleep(10)
+print(cache['key'])  # KeyError
+```
+
+If you want to add LRU functionality to your cache, you can `maxsize` argument
+
+```python
+from ttl_dict import TTLDict
+
+cache: TTLDict[str, str] = TTLDict(ttl=None, max_size=2)
+
+cache['key1'] = 'value1'
+cache['key2'] = 'value2'
+cache['key3'] = 'value3'
+
+print(cache.get('key1'))  # None
+print(cache.get('key2'))  # 'value2'
+print(cache.get('key3'))  # 'value3'
+```

@@ -1,12 +1,16 @@
+from __future__ import annotations
+
 import time
 from collections.abc import Hashable
 from dataclasses import dataclass
-from datetime import timedelta
 from threading import Lock
-from typing import Generic, Iterator, MutableMapping, Optional, TypeVar
+from typing import TYPE_CHECKING, Generic, Iterator, MutableMapping, TypeVar
 
 from ttl_dict._exceptions import TTLDictInvalidConfigError
 from ttl_dict._linked_list import DoubleLinkedListNode
+
+if TYPE_CHECKING:
+    from datetime import timedelta  # pragma: no cover
 
 _TKey = TypeVar("_TKey", bound=Hashable)
 _TValue = TypeVar("_TValue")
@@ -34,6 +38,8 @@ class _DictValue(Generic[_TKey, _TValue]):
 
 
 class TTLDict(MutableMapping[_TKey, _TValue]):
+    """A dictionary that removes items after a certain time."""
+
     __slots__ = (
         "_dict",
         "_ll_end",
@@ -47,11 +53,11 @@ class TTLDict(MutableMapping[_TKey, _TValue]):
     def __init__(
         self,
         *,
-        ttl: Optional[timedelta],
-        max_size: Optional[int] = None,
+        ttl: timedelta | None,
+        max_size: int | None = None,
         update_ttl_on_get: bool = False,
-    ):
-        """A dictionary that removes items after a certain time.
+    ) -> None:
+        """Initialize the dictionary.
 
         :param max_size: the maximum number of items in the dictionary. 0 means no limit.
         :param ttl: the time to live for each item in the dictionary.
@@ -59,29 +65,33 @@ class TTLDict(MutableMapping[_TKey, _TValue]):
         """
         self._validate_config(max_size, ttl, update_ttl_on_get)
         self._dict: dict[_TKey, _DictValue[_TKey, _TValue]] = {}
-        self._ll_head: Optional[DoubleLinkedListNode[_LinkedListValue[_TKey]]] = None
-        self._ll_end: Optional[DoubleLinkedListNode[_LinkedListValue[_TKey]]] = None
+        self._ll_head: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
+        self._ll_end: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
         self._max_size = max_size
         self._ttl = ttl
         self._update_ttl_on_get = update_ttl_on_get
         self._lock = Lock()
 
+    @staticmethod
     def _validate_config(
-        self,
-        max_size: Optional[int],
-        ttl: Optional[timedelta],
+        max_size: int | None,
+        ttl: timedelta | None,
         update_ttl_on_get: bool,
     ) -> None:
         if max_size is None and ttl is None:
-            raise TTLDictInvalidConfigError("max_size and ttl cannot be None at the same time.")
+            msg = "max_size and ttl cannot be None at the same time."
+            raise TTLDictInvalidConfigError(msg)
         if max_size is not None and max_size <= 0:
-            raise TTLDictInvalidConfigError("max_size must be greater than 0.")
+            msg = "max_size must be greater than 0."
+            raise TTLDictInvalidConfigError(msg)
         if ttl is not None and ttl.total_seconds() <= 0:
-            raise TTLDictInvalidConfigError("ttl must be greater than 0.")
+            msg = "ttl must be greater than 0."
+            raise TTLDictInvalidConfigError(msg)
         if ttl is None and update_ttl_on_get:
-            raise TTLDictInvalidConfigError("update_ttl_on_get cannot be True when ttl is None.")
+            msg = "update_ttl_on_get cannot be True when ttl is None."
+            raise TTLDictInvalidConfigError(msg)
 
-    def _update_by_ttl(self, current_time: Optional[float] = None) -> None:
+    def _update_by_ttl(self, current_time: float | None = None) -> None:
         """Remove items that have expired."""
         if self._ttl is None:
             return

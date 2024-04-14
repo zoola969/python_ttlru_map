@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from datetime import timedelta
-from typing import Optional
 
 import pytest
 
@@ -15,7 +16,7 @@ from ttl_dict import TTLDict, TTLDictInvalidConfigError
         (None, 1, False),
     ],
 )
-def test_init__ok(ttl: Optional[timedelta], max_size: Optional[int], update_ttl_on_get: bool):
+def test_init__ok(ttl: timedelta | None, max_size: int | None, update_ttl_on_get: bool):
     TTLDict(ttl=ttl, max_size=max_size, update_ttl_on_get=update_ttl_on_get)
 
 
@@ -31,6 +32,6 @@ def test_init__ok(ttl: Optional[timedelta], max_size: Optional[int], update_ttl_
         (None, 1, True),
     ],
 )
-def test_init_error(ttl: Optional[timedelta], max_size: Optional[int], update_ttl_on_get: bool):
+def test_init_error(ttl: timedelta | None, max_size: int | None, update_ttl_on_get: bool):
     with pytest.raises(TTLDictInvalidConfigError):
         TTLDict(ttl=ttl, max_size=max_size, update_ttl_on_get=update_ttl_on_get)
