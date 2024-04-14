@@ -3,8 +3,8 @@
 [![Documentation Status](https://readthedocs.org/projects/python-ttl-dict/badge/?version=latest)](https://python-ttl-dict.readthedocs.io/en/latest/?badge=latest)
 [![license](https://img.shields.io/github/license/zoola969/python_ttl_dict.svg)](https://github.com/zoola969/python_ttl_dict/blob/main/LICENSE)
 ![tests](https://github.com/zoola969/python_ttl_dict/actions/workflows/tests.yml/badge.svg?branch=master)
-
-
+![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
+![Mypy](https://img.shields.io/badge/mypy-checked-blue)
 ### Installation
 
 Installation is available using `pip install python_ttl_dict`.
