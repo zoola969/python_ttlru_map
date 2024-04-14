@@ -1,9 +1,9 @@
 name: Publish to PyPI
 
-on: push
-#  release:
-#    types:
-#      - created
+on:
+  release:
+    types:
+      - created
 
 
 jobs:
@@ -31,9 +31,8 @@ jobs:
       - build
     runs-on: ubuntu-latest
     environment:
-      #      name: pypi
-      #      url
       name: pypi
+#      url: https://pypi.org/p/ttl-dict
       url: https://test.pypi.org/p/ttl-dict
 
     permissions:

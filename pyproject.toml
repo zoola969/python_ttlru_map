@@ -7,7 +7,7 @@ authors = [
     {email = "zoola969@gmail.com", name = "Alexander Dmitriev"},
 ]
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
@@ -22,9 +22,9 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = []
-description = ""
+description = "Custom Mapping with TTL and LRU support."
 dynamic = ["version"]
-keywords = ["cache", "dict", "expire", "expired", "lru", "lru-cache", "time-to-live", "ttl"]
+keywords = ["cache", "dict", "expire", "expired", "lru", "lru-cache", "mapping", "time-to-live", "ttl"]
 license = {file = "LICENSE"}
 name = "ttl_dict"
 readme = "README.md"
@@ -47,8 +47,11 @@ test = [
 ]
 
 [project.urls]
+Changelog = "https://github.com/zoola969/python_ttl_dict/CHANGELOG.md"
+Documentation = "https://python-ttl-dict.readthedocs.io/en/latest/"
 Homepage = "https://github.com/zoola969/python_ttl_dict"
 Issues = "https://github.com/zoola969/python_ttl_dict/issues"
+Repository = "https://github.com/zoola969/python_ttl_dict.git"
 
 [tool.black]
 color = true
