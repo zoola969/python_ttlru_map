@@ -10,7 +10,7 @@ from ttl_dict._exceptions import TTLDictInvalidConfigError
 from ttl_dict._linked_list import DoubleLinkedListNode
 
 if TYPE_CHECKING:
-    from datetime import timedelta
+    from datetime import timedelta  # pragma: no cover
 
 _TKey = TypeVar("_TKey", bound=Hashable)
 _TValue = TypeVar("_TValue")
