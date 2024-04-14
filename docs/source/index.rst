@@ -3,9 +3,6 @@ Welcome to ttl_dict's documentation!
 **ttl_dict** is a Python library which provides a hash table with a time-to-live (TTL) for each key-value pair.
 
 
-.. note::
-
-   This project is under active development.
 
 
 .. toctree::
