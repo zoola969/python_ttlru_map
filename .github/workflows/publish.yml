@@ -27,14 +27,13 @@ jobs:
 
   publish-to-pypi:
     name: Publish
-    #    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
     needs:
       - build
     runs-on: ubuntu-latest
     environment:
       #      name: pypi
       #      url
-      name: testpypi
+      name: pypi
       url: https://test.pypi.org/p/ttl-dict
 
     permissions:
