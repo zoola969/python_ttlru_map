@@ -1,0 +1,30 @@
+---
+name: Tests
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  tests:
+    name: "Python ${{ matrix.python-version }}"
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: "actions/checkout@v4"
+      - uses: "actions/setup-python@v5"
+        with:
+          python-version: "${{ matrix.python-version }}"
+          allow-prereleases: true
+      - name: "Install dependencies"
+        run: "pip install -U pip && pip install .[test]"
+      - name: "Run tests"
+        run: "coverage run -m pytest tests/"
+      - name: "Enforce coverage"
+        run: "coverage report --show-missing --skip-covered --fail-under=100"
