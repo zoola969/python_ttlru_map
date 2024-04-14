@@ -173,6 +173,10 @@ ignore-variadic-names = true
 "__init__.py" = [
     "F401",  # imported but unused
 ]
+"docs/source/conf.py" = [
+    "A001",  # variable is shadowing a python builtin
+    "INP001",  # __init__ is missing
+]
 "tests/*" = [
     "ANN201",  # Missing return type annotation for public function
     "D103",  # Missing docstring in public function
