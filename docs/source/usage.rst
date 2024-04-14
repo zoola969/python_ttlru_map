@@ -24,7 +24,7 @@ Imagine you want a cache that stores values for 10 seconds. You can use :py:clas
 
    from ttl_dict import TTLDict
 
-   cache = TTLDict(ttl=timedelta(seconds=10)
+   cache = TTLDict(ttl=timedelta(seconds=10))
 
    cache['key'] = 'value'
    print(cache['key'])  # 'value'

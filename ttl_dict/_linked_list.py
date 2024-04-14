@@ -1,4 +1,6 @@
-from typing import Generic, Optional, TypeVar
+from __future__ import annotations
+
+from typing import Generic, TypeVar
 
 _T = TypeVar("_T")
 
@@ -11,10 +13,10 @@ class DoubleLinkedListNode(Generic[_T]):
         "prev",
     )
 
-    def __init__(self, value: _T):
+    def __init__(self, value: _T) -> None:
         self._value = value
-        self.next: Optional["DoubleLinkedListNode[_T]"] = None
-        self.prev: Optional["DoubleLinkedListNode[_T]"] = None
+        self.next: DoubleLinkedListNode[_T] | None = None
+        self.prev: DoubleLinkedListNode[_T] | None = None
 
     @property
     def value(self) -> _T:
