@@ -1,10 +1,10 @@
 from datetime import timedelta
 
-from ttl_dict import TTLDict
+from ttlru_map import TTLMap
 
 
 def test_delitem():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     key = 1
     value = 1
     d[key] = value

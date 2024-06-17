@@ -4,7 +4,7 @@ from datetime import timedelta
 
 import pytest
 
-from ttl_dict import TTLDict, TTLDictInvalidConfigError
+from ttlru_map import TTLMap, TTLMapInvalidConfigError
 
 
 @pytest.mark.parametrize(
@@ -17,7 +17,7 @@ from ttl_dict import TTLDict, TTLDictInvalidConfigError
     ],
 )
 def test_init__ok(ttl: timedelta | None, max_size: int | None, update_ttl_on_get: bool):
-    TTLDict(ttl=ttl, max_size=max_size, update_ttl_on_get=update_ttl_on_get)
+    TTLMap(ttl=ttl, max_size=max_size, update_ttl_on_get=update_ttl_on_get)
 
 
 @pytest.mark.parametrize(
@@ -33,5 +33,5 @@ def test_init__ok(ttl: timedelta | None, max_size: int | None, update_ttl_on_get
     ],
 )
 def test_init_error(ttl: timedelta | None, max_size: int | None, update_ttl_on_get: bool):
-    with pytest.raises(TTLDictInvalidConfigError):
-        TTLDict(ttl=ttl, max_size=max_size, update_ttl_on_get=update_ttl_on_get)
+    with pytest.raises(TTLMapInvalidConfigError):
+        TTLMap(ttl=ttl, max_size=max_size, update_ttl_on_get=update_ttl_on_get)

@@ -1,19 +1,19 @@
 from datetime import timedelta
 from unittest.mock import patch
 
-from ttl_dict import TTLDict
-from ttl_dict._linked_list import DoubleLinkedListNode
-from ttl_dict._ttl_dict import _DictValue, _LinkedListValue
+from ttlru_map import TTLMap
+from ttlru_map._linked_list import DoubleLinkedListNode
+from ttlru_map._ttl_map import _DictValue, _LinkedListValue
 
 
 def test_setitem__new_item():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     time_ = 100.0
     key = 1
     value = 1
     expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
-    with patch.object(TTLDict, "_pop_ll_node") as mock_pop_ll_node, patch.object(
-        TTLDict,
+    with patch.object(TTLMap, "_pop_ll_node") as mock_pop_ll_node, patch.object(
+        TTLMap,
         "_put_node_to_end",
     ) as mock_put_node_to_end:
         d._setitem(key, value, time_)
@@ -24,15 +24,15 @@ def test_setitem__new_item():
 
 
 def test_setitem__existing_item():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     time_ = 100.0
     key = 1
     value = 1
     d[key] = value
     old_node = d._dict[key].node
     expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
-    with patch.object(TTLDict, "_pop_ll_node") as mock_pop_ll_node, patch.object(
-        TTLDict,
+    with patch.object(TTLMap, "_pop_ll_node") as mock_pop_ll_node, patch.object(
+        TTLMap,
         "_put_node_to_end",
     ) as mock_put_node_to_end:
         d._setitem(key, value, time_)

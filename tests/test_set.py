@@ -2,13 +2,13 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from tests.utils import LockMock
-from ttl_dict import TTLDict
-from ttl_dict._linked_list import DoubleLinkedListNode
-from ttl_dict._ttl_dict import _DictValue, _LinkedListValue
+from ttlru_map import TTLMap
+from ttlru_map._linked_list import DoubleLinkedListNode
+from ttlru_map._ttl_map import _DictValue, _LinkedListValue
 
 
 def test_set__first():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     lock_mock = LockMock()
     d._lock = lock_mock
     key = 1
@@ -16,15 +16,15 @@ def test_set__first():
     time_ = 10
     expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
     with patch("time.time", return_value=time_) as time_mock, patch.object(
-        TTLDict,
+        TTLMap,
         "_setitem",
         wraps=d._setitem,
     ) as setitem_mock, patch.object(
-        TTLDict,
+        TTLMap,
         "_update_by_ttl",
         wraps=d._update_by_ttl,
     ) as update_by_ttl_mock, patch.object(
-        TTLDict,
+        TTLMap,
         "_update_by_size",
         wraps=d._update_by_size,
     ) as update_by_size_mock:
@@ -42,7 +42,7 @@ def test_set__first():
 
 
 def test_set__second():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     head_key = 1
     head_value = 2
     d[head_key] = head_value
@@ -54,15 +54,15 @@ def test_set__second():
     time_ = 10
     expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=new_key))
     with patch("time.time", return_value=time_) as time_mock, patch.object(
-        TTLDict,
+        TTLMap,
         "_setitem",
         wraps=d._setitem,
     ) as setitem_mock, patch.object(
-        TTLDict,
+        TTLMap,
         "_update_by_ttl",
         wraps=d._update_by_ttl,
     ) as update_by_ttl_mock, patch.object(
-        TTLDict,
+        TTLMap,
         "_update_by_size",
         wraps=d._update_by_size,
     ) as update_by_size_mock:

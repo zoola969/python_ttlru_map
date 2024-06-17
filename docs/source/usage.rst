@@ -6,25 +6,25 @@ Usage
 Installation
 ------------
 
-To use **ttl_dict**, first install it using pip:
+To use **ttlru_map**, first install it using pip:
 
 .. code-block:: console
 
-   (.venv) $ pip install ttl_dict
+   (.venv) $ pip install ttlru_map
 
 Usage example
 _____________
 
-Imagine you want a cache that stores values for 10 seconds. You can use :py:class:`ttl_dict.TTLDict` class for that:
+Imagine you want a cache that stores values for 10 seconds. You can use :py:class:`ttlru_map.TTLMap` class for that:
 
 .. code-block:: python
 
    from datetime import timedelta
    from time import sleep
 
-   from ttl_dict import TTLDict
+   from ttlru_map import TTLMap
 
-   cache = TTLDict(ttl=timedelta(seconds=10))
+   cache = TTLMap(ttl=timedelta(seconds=10))
 
    cache['key'] = 'value'
    print(cache['key'])  # 'value'
@@ -35,16 +35,16 @@ Imagine you want a cache that stores values for 10 seconds. You can use :py:clas
 
 
 If you want to add LRU functionality to your cache, you can `maxsize` argument
-:py:class:`ttl_dict.TTLDict` class:
+:py:class:`ttlru_map.TTLMap` class:
 
 .. code-block:: python
 
     from datetime import timedelta
     from time import sleep
 
-    from ttl_dict import TTLDict
+    from ttlru_map import TTLMap
 
-    cache = TTLDict(ttl=timedelta(seconds=10), maxsize=2)
+    cache = TTLMap(ttl=timedelta(seconds=10), maxsize=2)
     cache["first"] = 1
     cache["second"] = 2
     print(cache)

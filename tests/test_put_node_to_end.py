@@ -1,12 +1,12 @@
 from datetime import timedelta
 
-from ttl_dict import TTLDict
-from ttl_dict._linked_list import DoubleLinkedListNode
-from ttl_dict._ttl_dict import _LinkedListValue
+from ttlru_map import TTLMap
+from ttlru_map._linked_list import DoubleLinkedListNode
+from ttlru_map._ttl_map import _LinkedListValue
 
 
 def test_put_node_to_end__empty_dict():
-    d = TTLDict(ttl=timedelta(seconds=100))
+    d = TTLMap(ttl=timedelta(seconds=100))
     assert d._ll_head is None
     assert d._ll_end is None
     node = DoubleLinkedListNode(value=_LinkedListValue(time_=1, key=1))
@@ -19,7 +19,7 @@ def test_put_node_to_end__empty_dict():
 
 
 def test_put_node_to_end__not_empty_dict():
-    d = TTLDict(ttl=timedelta(seconds=100))
+    d = TTLMap(ttl=timedelta(seconds=100))
 
     d[1] = 1
     d[2] = 2

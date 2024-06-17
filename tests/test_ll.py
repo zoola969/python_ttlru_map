@@ -1,4 +1,4 @@
-from ttl_dict._linked_list import DoubleLinkedListNode
+from ttlru_map._linked_list import DoubleLinkedListNode
 
 
 def test_ll_value():

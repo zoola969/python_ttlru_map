@@ -2,19 +2,19 @@ import time
 from datetime import timedelta
 from unittest.mock import patch
 
-from ttl_dict import TTLDict
-from ttl_dict._linked_list import DoubleLinkedListNode
-from ttl_dict._ttl_dict import _DictValue, _LinkedListValue
+from ttlru_map import TTLMap
+from ttlru_map._linked_list import DoubleLinkedListNode
+from ttlru_map._ttl_map import _DictValue, _LinkedListValue
 
 
 def test_update_by_ttl__empty_dict():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     d._update_by_ttl()
 
 
 def test_update_by_ttl__last_item():
     ttl = timedelta(seconds=100)
-    d = TTLDict(ttl=ttl)
+    d = TTLMap(ttl=ttl)
     time_ = time.time() + ttl.total_seconds() + 1
     d._update_by_ttl(current_time=time_)
     assert d._ll_head is None
@@ -24,7 +24,7 @@ def test_update_by_ttl__last_item():
 
 def test_update_by_ttl__expired_head():
     ttl = timedelta(seconds=100)
-    d = TTLDict(ttl=ttl)
+    d = TTLMap(ttl=ttl)
     k1 = 1
     k2 = 2
     v1 = 1
@@ -43,7 +43,7 @@ def test_update_by_ttl__expired_head():
 
 def test_update_by_ttl__unlimited_ttl():
     size = 1000
-    d = TTLDict(ttl=None, max_size=size)
+    d = TTLMap(ttl=None, max_size=size)
     for i in range(size):
         d[i] = i
     d._update_by_ttl()

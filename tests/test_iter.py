@@ -1,10 +1,10 @@
 from datetime import timedelta
 
-from ttl_dict import TTLDict
+from ttlru_map import TTLMap
 
 
 def test_iter():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     assert list(d) == []
 
     d["key1"] = "value"

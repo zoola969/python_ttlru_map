@@ -1,10 +1,10 @@
 from datetime import timedelta
 
-from ttl_dict import TTLDict
+from ttlru_map import TTLMap
 
 
 def test_len():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     assert len(d) == 0
 
     d[1] = 1
