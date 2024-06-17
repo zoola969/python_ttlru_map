@@ -47,11 +47,11 @@ test = [
 ]
 
 [project.urls]
-Changelog = "https://github.com/zoola969/python_ttl_dict/CHANGELOG.md"
-Documentation = "https://python-ttl-dict.readthedocs.io/en/latest/"
-Homepage = "https://github.com/zoola969/python_ttl_dict"
-Issues = "https://github.com/zoola969/python_ttl_dict/issues"
-Repository = "https://github.com/zoola969/python_ttl_dict.git"
+Changelog = "https://github.com/zoola969/python_ttlru_map/CHANGELOG.md"
+Documentation = "https://python_ttlru_map.readthedocs.io/en/latest/"
+Homepage = "https://github.com/zoola969/python_ttlru_map"
+Issues = "https://github.com/zoola969/python_ttlru_map/issues"
+Repository = "https://github.com/zoola969/python_ttlru_map.git"
 
 [tool.black]
 color = true
