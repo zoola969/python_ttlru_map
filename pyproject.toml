@@ -26,7 +26,7 @@ description = "Custom Mapping with TTL and LRU support."
 dynamic = ["version"]
 keywords = ["cache", "dict", "expire", "expired", "lru", "lru-cache", "mapping", "time-to-live", "ttl"]
 license = {file = "LICENSE"}
-name = "ttl_dict"
+name = "ttlru-map"
 readme = "README.md"
 requires-python = ">=3.8"
 
@@ -47,11 +47,11 @@ test = [
 ]
 
 [project.urls]
-Changelog = "https://github.com/zoola969/python_ttl_dict/CHANGELOG.md"
-Documentation = "https://python-ttl-dict.readthedocs.io/en/latest/"
-Homepage = "https://github.com/zoola969/python_ttl_dict"
-Issues = "https://github.com/zoola969/python_ttl_dict/issues"
-Repository = "https://github.com/zoola969/python_ttl_dict.git"
+Changelog = "https://github.com/zoola969/python_ttlru_map/CHANGELOG.md"
+Documentation = "https://python_ttlru_map.readthedocs.io/en/latest/"
+Homepage = "https://github.com/zoola969/python_ttlru_map"
+Issues = "https://github.com/zoola969/python_ttlru_map/issues"
+Repository = "https://github.com/zoola969/python_ttlru_map.git"
 
 [tool.black]
 color = true
@@ -59,7 +59,7 @@ line-length = 120
 target-version = ['py38']
 
 [tool.hatch.version]
-path = "ttl_dict/__init__.py"
+path = "ttlru_map/__init__.py"
 
 [tool.isort]
 float_to_top = true

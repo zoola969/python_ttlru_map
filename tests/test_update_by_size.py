@@ -1,11 +1,11 @@
 from datetime import timedelta
 
-from ttl_dict import TTLDict
+from ttlru_map import TTLMap
 
 
 def test_update_by_size__unlimited_size():
     ttl = timedelta(seconds=1000)
-    d = TTLDict(ttl=ttl, max_size=None)
+    d = TTLMap(ttl=ttl, max_size=None)
     size = 1000
     for i in range(size):
         d[i] = i
@@ -15,7 +15,7 @@ def test_update_by_size__unlimited_size():
 
 def test_update_by_size__empty_dict():
     ttl = timedelta(seconds=1000)
-    d = TTLDict(ttl=ttl, max_size=100)
+    d = TTLMap(ttl=ttl, max_size=100)
     d._update_by_size()
     assert len(d) == 0
 
@@ -23,7 +23,7 @@ def test_update_by_size__empty_dict():
 def test_update_by_size__dict_full():
     ttl = timedelta(seconds=1000)
     size = 3
-    d = TTLDict(ttl=ttl, max_size=size)
+    d = TTLMap(ttl=ttl, max_size=size)
     for i in range(size):
         d[i] = i
     assert len(d) == size
@@ -37,7 +37,7 @@ def test_update_by_size__dict_full():
 
 def test_update_by_size__rm_last_item():
     ttl = timedelta(seconds=1000)
-    d = TTLDict(ttl=ttl, max_size=1)
+    d = TTLMap(ttl=ttl, max_size=1)
     d[1] = 1
     assert len(d) == 1
     d._max_size = 0

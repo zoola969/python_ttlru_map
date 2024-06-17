@@ -12,8 +12,8 @@ import sys
 
 sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 
-project = "ttl_dict"
-copyright = "2023, Alexander Dmitriev"
+project = "ttlru_map"
+copyright = "2024, Alexander Dmitriev"
 author = "Alexander Dmitriev"
 
 # -- General configuration ---------------------------------------------------

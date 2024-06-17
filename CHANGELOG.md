@@ -2,4 +2,4 @@
 
 ## 1.0
 
-- Added TTLDict class
+- Added TTLMap class

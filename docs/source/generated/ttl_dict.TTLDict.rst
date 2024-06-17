@@ -1,9 +1,9 @@
-﻿ttl\_dict.TTLDict
+﻿ttl\_dict.TTLMap
 =================
 
-.. currentmodule:: ttl_dict
+.. currentmodule:: ttlru_map
 
-.. autoclass:: TTLDict
+.. autoclass:: TTLMap
 
 
    .. automethod:: __init__
@@ -13,13 +13,13 @@
 
    .. autosummary::
 
-      ~TTLDict.__init__
-      ~TTLDict.clear
-      ~TTLDict.get
-      ~TTLDict.items
-      ~TTLDict.keys
-      ~TTLDict.pop
-      ~TTLDict.popitem
-      ~TTLDict.setdefault
-      ~TTLDict.update
-      ~TTLDict.values
+      ~TTLMap.__init__
+      ~TTLMap.clear
+      ~TTLMap.get
+      ~TTLMap.items
+      ~TTLMap.keys
+      ~TTLMap.pop
+      ~TTLMap.popitem
+      ~TTLMap.setdefault
+      ~TTLMap.update
+      ~TTLMap.values

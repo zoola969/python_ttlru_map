@@ -4,13 +4,13 @@ from unittest.mock import patch
 import pytest
 
 from tests.utils import LockMock
-from ttl_dict import TTLDict
-from ttl_dict._linked_list import DoubleLinkedListNode
-from ttl_dict._ttl_dict import _DictValue, _LinkedListValue
+from ttlru_map import TTLMap
+from ttlru_map._linked_list import DoubleLinkedListNode
+from ttlru_map._ttl_map import _DictValue, _LinkedListValue
 
 
 def test_delete():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     lock_mock = LockMock()
     d._lock = lock_mock
     key = 1
@@ -23,8 +23,8 @@ def test_delete():
     d._ll_head = node
     d._ll_end = node
 
-    with patch.object(TTLDict, "_delitem", wraps=d._delitem) as delitem_mock, patch.object(
-        TTLDict,
+    with patch.object(TTLMap, "_delitem", wraps=d._delitem) as delitem_mock, patch.object(
+        TTLMap,
         "_update_by_ttl",
         wraps=d._update_by_ttl,
     ) as update_by_ttl_mock:
@@ -38,7 +38,7 @@ def test_delete():
 
 
 def test_delete__item_not_found():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
 
     with pytest.raises(KeyError):
         del d[1]
@@ -46,7 +46,7 @@ def test_delete__item_not_found():
 
 def test_delete__item_expired():
     ttl = timedelta(seconds=100)
-    d = TTLDict(ttl=ttl)
+    d = TTLMap(ttl=ttl)
     key = 1
     value = 2
     time_ = 10

@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from threading import Lock
 from typing import TYPE_CHECKING, Generic, Iterator, MutableMapping, TypeVar
 
-from ttl_dict._exceptions import TTLDictInvalidConfigError
-from ttl_dict._linked_list import DoubleLinkedListNode
+from ttlru_map._exceptions import TTLMapInvalidConfigError
+from ttlru_map._linked_list import DoubleLinkedListNode
 
 if TYPE_CHECKING:
     from datetime import timedelta  # pragma: no cover
@@ -37,7 +37,7 @@ class _DictValue(Generic[_TKey, _TValue]):
         return f"{self.__class__.__name__}(node={self.node}, value={self.value})"
 
 
-class TTLDict(MutableMapping[_TKey, _TValue]):
+class TTLMap(MutableMapping[_TKey, _TValue]):
     """A dictionary that removes items after a certain time."""
 
     __slots__ = (
@@ -80,16 +80,16 @@ class TTLDict(MutableMapping[_TKey, _TValue]):
     ) -> None:
         if max_size is None and ttl is None:
             msg = "max_size and ttl cannot be None at the same time."
-            raise TTLDictInvalidConfigError(msg)
+            raise TTLMapInvalidConfigError(msg)
         if max_size is not None and max_size <= 0:
             msg = "max_size must be greater than 0."
-            raise TTLDictInvalidConfigError(msg)
+            raise TTLMapInvalidConfigError(msg)
         if ttl is not None and ttl.total_seconds() <= 0:
             msg = "ttl must be greater than 0."
-            raise TTLDictInvalidConfigError(msg)
+            raise TTLMapInvalidConfigError(msg)
         if ttl is None and update_ttl_on_get:
             msg = "update_ttl_on_get cannot be True when ttl is None."
-            raise TTLDictInvalidConfigError(msg)
+            raise TTLMapInvalidConfigError(msg)
 
     def _update_by_ttl(self, current_time: float | None = None) -> None:
         """Remove items that have expired."""

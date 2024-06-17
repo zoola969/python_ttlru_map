@@ -1,6 +1,6 @@
-Welcome to ttl_dict's documentation!
+Welcome to ttlru_map's documentation!
 ====================================
-**ttl_dict** is a Python library which provides a hash table with a time-to-live (TTL) for each key-value pair.
+**ttlru_map** is a Python library which provides a hash table with a time-to-live (TTL) for each key-value pair.
 
 
 

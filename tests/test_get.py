@@ -4,13 +4,13 @@ from unittest.mock import patch
 import pytest
 
 from tests.utils import LockMock
-from ttl_dict import TTLDict
-from ttl_dict._ttl_dict import DoubleLinkedListNode, _DictValue, _LinkedListValue
+from ttlru_map import TTLMap
+from ttlru_map._ttl_map import DoubleLinkedListNode, _DictValue, _LinkedListValue
 
 
 @pytest.mark.parametrize("update_ttl_on_get", [True, False])
 def test_get(update_ttl_on_get: bool):
-    d = TTLDict(ttl=timedelta(seconds=1000), update_ttl_on_get=update_ttl_on_get)
+    d = TTLMap(ttl=timedelta(seconds=1000), update_ttl_on_get=update_ttl_on_get)
     lock_mock = LockMock()
     d._lock = lock_mock
     key = 1
@@ -23,10 +23,10 @@ def test_get(update_ttl_on_get: bool):
     d._ll_end = node
 
     with patch("time.time", return_value=time_) as time_mock, patch.object(
-        TTLDict,
+        TTLMap,
         "_setitem",
         wraps=d._setitem,
-    ) as setitem_mock, patch.object(TTLDict, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock:
+    ) as setitem_mock, patch.object(TTLMap, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock:
         assert d[key] == value
         time_mock.assert_called_once()
         update_by_ttl_mock.assert_called_once_with(current_time=time_)
@@ -37,7 +37,7 @@ def test_get(update_ttl_on_get: bool):
 
 
 def test_get__item_not_found():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
 
     with pytest.raises(KeyError):
         _ = d[1]
@@ -45,7 +45,7 @@ def test_get__item_not_found():
 
 def test_get__item_expired():
     ttl = timedelta(seconds=100)
-    d = TTLDict(ttl=ttl)
+    d = TTLMap(ttl=ttl)
     key = 1
     value = 2
     time_ = 10

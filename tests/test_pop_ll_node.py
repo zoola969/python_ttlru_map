@@ -1,10 +1,10 @@
 from datetime import timedelta
 
-from ttl_dict import TTLDict
+from ttlru_map import TTLMap
 
 
 def test_pop_ll_node__middle_node():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     head = 1
     middle = 2
     end = 3
@@ -35,7 +35,7 @@ def test_pop_ll_node__middle_node():
 
 
 def test_pop_ll_node__head_node():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     head = 1
     middle = 2
     end = 3
@@ -66,7 +66,7 @@ def test_pop_ll_node__head_node():
 
 
 def test_pop_ll_node__end_node():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     head = 1
     middle = 2
     end = 3
@@ -97,7 +97,7 @@ def test_pop_ll_node__end_node():
 
 
 def test_pop_ll_node__only_node():
-    d = TTLDict(ttl=timedelta(seconds=1000))
+    d = TTLMap(ttl=timedelta(seconds=1000))
     d[1] = 1
     assert d._ll_head is d._ll_end
     d._pop_ll_node(d._ll_head)
