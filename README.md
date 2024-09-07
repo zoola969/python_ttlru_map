@@ -7,7 +7,7 @@
 ![Mypy](https://img.shields.io/badge/mypy-checked-blue)
 ### Installation
 
-Installation is available using `pip install python_ttlru_map`.
+Installation is available using `pip install ttlru-map`.
 
 ### Core Features
 
