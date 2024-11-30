@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Hashable
+from collections.abc import Hashable, MutableMapping
 from dataclasses import dataclass
 from threading import Lock
-from typing import TYPE_CHECKING, Generic, Iterator, MutableMapping, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from ttlru_map._exceptions import TTLMapInvalidConfigError
 from ttlru_map._linked_list import DoubleLinkedListNode
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator  # pragma: no cover
     from datetime import timedelta  # pragma: no cover
 
 _TKey = TypeVar("_TKey", bound=Hashable)
@@ -134,7 +135,7 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
             node.prev = self._ll_end
             self._ll_end = node
 
-    def _setitem(self, __key: _TKey, __value: _TValue, time_: float) -> None:
+    def _setitem(self, __key: _TKey, __value: _TValue, time_: float, /) -> None:
         """Set an item in the dictionary and put it to the end of the linked list."""
         new_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=__key))
 
@@ -151,20 +152,20 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
         del self._dict[item.node.value.key]
         self._pop_ll_node(item.node)
 
-    def __setitem__(self, __key: _TKey, __value: _TValue) -> None:
+    def __setitem__(self, __key: _TKey, __value: _TValue, /) -> None:
         with self._lock:
             time_ = time.time()
             self._setitem(__key, __value, time_)
             self._update_by_ttl(current_time=time_)
             self._update_by_size()
 
-    def __delitem__(self, __key: _TKey) -> None:
+    def __delitem__(self, __key: _TKey, /) -> None:
         with self._lock:
             item = self._dict[__key]
             self._delitem(item)
             self._update_by_ttl()
 
-    def __getitem__(self, __key: _TKey) -> _TValue:
+    def __getitem__(self, __key: _TKey, /) -> _TValue:
         with self._lock:
             time_ = time.time()
             self._update_by_ttl(current_time=time_)

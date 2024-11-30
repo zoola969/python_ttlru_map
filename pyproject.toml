@@ -7,7 +7,7 @@ authors = [
     {email = "zoola969@gmail.com", name = "Alexander Dmitriev"},
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
@@ -15,7 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python",
     "Topic :: Software Development :: Libraries",
@@ -28,7 +28,7 @@ keywords = ["cache", "dict", "expire", "expired", "lru", "lru-cache", "mapping",
 license = {file = "LICENSE"}
 name = "ttlru-map"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 benchmarks = [
@@ -42,7 +42,7 @@ docs = [
 ]
 test = [
     "coverage~=7.3",
-    "mypy~=1.9",
+    "mypy~=1.13",
     "pytest~=8.1",
 ]
 
@@ -56,7 +56,7 @@ Repository = "https://github.com/zoola969/python_ttlru_map.git"
 [tool.black]
 color = true
 line-length = 120
-target-version = ['py38']
+target-version = ['py39']
 
 [tool.hatch.version]
 path = "ttlru_map/__init__.py"
@@ -91,22 +91,7 @@ extend-safe-fixes = [
     "ANN204",
     "UP007",
 ]
-ignore = [
-    "A003",  # Class attribute {name} is shadowing a python builtin
-    "AIR",  # airflow
-    "ANN101",  # Missing type annotation for `self` in method
-    "ANN102",  # Missing type annotation for `cls` in classmethod
-    "CPY",  # flake8-copyright
-    "D100",  # Missing docstring in public module
-    "D104",  # Missing docstring in public package
-    "D107",  # Missing docstring in __init__
-    "D203",  # 1 blank line required before class docstring
-    "D213",  # Multi-line docstring summary should start at the second line
-    "PLC1901",  # compare-to-empty-string
-    "PYI041",  # redundant-numeric-union. Use `float` instead of `int | float`
-]
-ignore-init-module-imports = true
-select = [
+extend-select = [
     "A",  # flake8-builtins
     "ANN",  # flake8-annotations
     "ARG",  # flake8-unused-arguments
@@ -155,6 +140,18 @@ select = [
     "UP",  # pyupgrade
     "W",  # pycodestyle warning
     "YTT",  # flake8-2020
+]
+ignore = [
+    "A003",  # Class attribute {name} is shadowing a python builtin
+    "AIR",  # airflow
+    "CPY",  # flake8-copyright
+    "D100",  # Missing docstring in public module
+    "D104",  # Missing docstring in public package
+    "D107",  # Missing docstring in __init__
+    "D203",  # 1 blank line required before class docstring
+    "D213",  # Multi-line docstring summary should start at the second line
+    "PLC1901",  # compare-to-empty-string
+    "PYI041",  # redundant-numeric-union. Use `float` instead of `int | float`
 ]
 
 [tool.ruff.lint.flake8-comprehensions]
