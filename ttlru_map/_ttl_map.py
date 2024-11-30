@@ -10,7 +10,7 @@ from ttlru_map._exceptions import TTLMapInvalidConfigError
 from ttlru_map._linked_list import DoubleLinkedListNode
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator  # pragma: no cover
     from datetime import timedelta  # pragma: no cover
 
 _TKey = TypeVar("_TKey", bound=Hashable)
