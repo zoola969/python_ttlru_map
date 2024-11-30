@@ -15,19 +15,24 @@ def test_set__first():
     value = 2
     time_ = 10
     expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
-    with patch("time.time", return_value=time_) as time_mock, patch.object(
-        TTLMap,
-        "_setitem",
-        wraps=d._setitem,
-    ) as setitem_mock, patch.object(
-        TTLMap,
-        "_update_by_ttl",
-        wraps=d._update_by_ttl,
-    ) as update_by_ttl_mock, patch.object(
-        TTLMap,
-        "_update_by_size",
-        wraps=d._update_by_size,
-    ) as update_by_size_mock:
+    with (
+        patch("time.time", return_value=time_) as time_mock,
+        patch.object(
+            TTLMap,
+            "_setitem",
+            wraps=d._setitem,
+        ) as setitem_mock,
+        patch.object(
+            TTLMap,
+            "_update_by_ttl",
+            wraps=d._update_by_ttl,
+        ) as update_by_ttl_mock,
+        patch.object(
+            TTLMap,
+            "_update_by_size",
+            wraps=d._update_by_size,
+        ) as update_by_size_mock,
+    ):
         d[key] = value
         time_mock.assert_called_once()
         setitem_mock.assert_called_once_with(key, value, time_)
@@ -53,19 +58,24 @@ def test_set__second():
     new_value = 20
     time_ = 10
     expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=new_key))
-    with patch("time.time", return_value=time_) as time_mock, patch.object(
-        TTLMap,
-        "_setitem",
-        wraps=d._setitem,
-    ) as setitem_mock, patch.object(
-        TTLMap,
-        "_update_by_ttl",
-        wraps=d._update_by_ttl,
-    ) as update_by_ttl_mock, patch.object(
-        TTLMap,
-        "_update_by_size",
-        wraps=d._update_by_size,
-    ) as update_by_size_mock:
+    with (
+        patch("time.time", return_value=time_) as time_mock,
+        patch.object(
+            TTLMap,
+            "_setitem",
+            wraps=d._setitem,
+        ) as setitem_mock,
+        patch.object(
+            TTLMap,
+            "_update_by_ttl",
+            wraps=d._update_by_ttl,
+        ) as update_by_ttl_mock,
+        patch.object(
+            TTLMap,
+            "_update_by_size",
+            wraps=d._update_by_size,
+        ) as update_by_size_mock,
+    ):
         d[new_key] = new_value
         time_mock.assert_called_once()
         setitem_mock.assert_called_once_with(new_key, new_value, time_)

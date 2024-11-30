@@ -23,11 +23,14 @@ def test_delete():
     d._ll_head = node
     d._ll_end = node
 
-    with patch.object(TTLMap, "_delitem", wraps=d._delitem) as delitem_mock, patch.object(
-        TTLMap,
-        "_update_by_ttl",
-        wraps=d._update_by_ttl,
-    ) as update_by_ttl_mock:
+    with (
+        patch.object(TTLMap, "_delitem", wraps=d._delitem) as delitem_mock,
+        patch.object(
+            TTLMap,
+            "_update_by_ttl",
+            wraps=d._update_by_ttl,
+        ) as update_by_ttl_mock,
+    ):
         del d[key]
         assert d._dict == {}
         assert d._ll_head is None

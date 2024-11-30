@@ -22,11 +22,15 @@ def test_get(update_ttl_on_get: bool):
     d._ll_head = node
     d._ll_end = node
 
-    with patch("time.time", return_value=time_) as time_mock, patch.object(
-        TTLMap,
-        "_setitem",
-        wraps=d._setitem,
-    ) as setitem_mock, patch.object(TTLMap, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock:
+    with (
+        patch("time.time", return_value=time_) as time_mock,
+        patch.object(
+            TTLMap,
+            "_setitem",
+            wraps=d._setitem,
+        ) as setitem_mock,
+        patch.object(TTLMap, "_update_by_ttl", wraps=d._update_by_ttl) as update_by_ttl_mock,
+    ):
         assert d[key] == value
         time_mock.assert_called_once()
         update_by_ttl_mock.assert_called_once_with(current_time=time_)
