@@ -1,7 +1,6 @@
 ci:
   autoupdate_schedule: weekly
   autofix_prs: false
-  autoupdate_branch: pre-commit-autoupdate
   autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
 default_language_version:
   python: python3.9
