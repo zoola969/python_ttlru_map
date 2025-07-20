@@ -12,7 +12,7 @@ class DoubleLinkedListNode(Generic[_T]):
         "next",
         "prev",
     )
-    __hash__ = None  # pragma: no cover
+    __hash__ = None  # type: ignore[assignment] # pragma: no cover
 
     def __init__(self, value: _T) -> None:
         self._value = value
