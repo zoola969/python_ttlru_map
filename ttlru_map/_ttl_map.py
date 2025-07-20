@@ -64,7 +64,7 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
         :param ttl: the time to live for each item in the dictionary.
         :param update_ttl_on_get: whether to update the time to live when getting an item.
         """
-        self._validate_config(max_size, ttl, update_ttl_on_get)
+        self._validate_config(max_size, ttl, update_ttl_on_get=update_ttl_on_get)
         self._dict: dict[_TKey, _DictValue[_TKey, _TValue]] = {}
         self._ll_head: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
         self._ll_end: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
@@ -77,6 +77,7 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
     def _validate_config(
         max_size: int | None,
         ttl: timedelta | None,
+        *,
         update_ttl_on_get: bool,
     ) -> None:
         if max_size is None and ttl is None:
