@@ -12,6 +12,7 @@ class DoubleLinkedListNode(Generic[_T]):
         "next",
         "prev",
     )
+    __hash__ = None  # pragma: no cover
 
     def __init__(self, value: _T) -> None:
         self._value = value
@@ -28,9 +29,6 @@ class DoubleLinkedListNode(Generic[_T]):
         if self is other:
             return True
         return self._value == other._value  # type: ignore[no-any-return]
-
-    def __hash__(self) -> int:  # pragma: no cover
-        return hash(self._value)
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"{self.__class__.__name__}(value={self._value})"
