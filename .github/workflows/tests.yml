@@ -24,7 +24,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: "Install dependencies"
-        run: uv sync --locked --no-default-groups --no-install-project --group dev --group test
+        run: uv sync --locked --no-default-groups --no-install-project --group test
 
       - name: "Run mypy"
         run: uv run --no-project mypy ttlru_map
