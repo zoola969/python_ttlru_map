@@ -1,6 +1,20 @@
 [build-system]
 build-backend = "hatchling.build"
-requires = ["hatchling~=1.7"]
+requires = ["hatchling", "uv-dynamic-versioning"]
+
+[dependency-groups]
+dev = [
+    "black~=25.1",
+    "pre-commit~=4.0",
+]
+docs = [
+    "sphinx>=7.2,<9.0",
+]
+test = [
+    "coverage~=7.3",
+    "mypy~=1.17",
+    "pytest~=8.1",
+]
 
 [project]
 authors = [
@@ -30,22 +44,6 @@ name = "ttlru-map"
 readme = "README.md"
 requires-python = ">=3.9"
 
-[project.optional-dependencies]
-benchmarks = [
-    "perfplot~=0.10",
-]
-build = [
-    "hatch~=1.7",
-]
-docs = [
-    "sphinx>=7.2,<9.0",
-]
-test = [
-    "coverage~=7.3",
-    "mypy~=1.17",
-    "pytest~=8.1",
-]
-
 [project.urls]
 Changelog = "https://github.com/zoola969/python_ttlru_map/CHANGELOG.md"
 Documentation = "https://python_ttlru_map.readthedocs.io/en/latest/"
@@ -59,7 +57,7 @@ line-length = 120
 target-version = ['py39']
 
 [tool.hatch.version]
-path = "ttlru_map/__init__.py"
+source = "uv-dynamic-versioning"
 
 [tool.isort]
 float_to_top = true
@@ -156,3 +154,10 @@ sort_table_keys = true
 spaces_before_inline_comment = 2
 spaces_indent_inline_array = 4
 trailing_comma_inline_array = true
+
+[tool.uv]
+default-groups = ["dev", "docs", "test"]
+no-build = true
+
+[tool.uv-dynamic-versioning]
+fallback-version = "0.0.0"

@@ -13,14 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: install build dependencies
-        run: pip install .[build]
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
+
       - name: build
-        run: hatch build
+        run: uv build
+
       - name: Store package distributions
         uses: actions/upload-artifact@v3
         with:

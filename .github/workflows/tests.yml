@@ -17,16 +17,20 @@ jobs:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "actions/setup-python@v5"
+      - uses: actions/checkout@v4
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: "${{ matrix.python-version }}"
-          allow-prereleases: true
+          python-version: ${{ matrix.python-version }}
+
       - name: "Install dependencies"
-        run: "pip install -U pip && pip install .[test]"
+        run: uv sync --locked --no-default-groups --no-install-project --group dev --group test
+
       - name: "Run mypy"
-        run: mypy ttlru_map
+        run: uv run --no-project mypy ttlru_map
+
       - name: "Run tests"
-        run: "coverage run -m pytest tests/"
+        run: uv run --no-project coverage run -m pytest tests/
+
       - name: "Enforce coverage"
-        run: "coverage report --show-missing --skip-covered --fail-under=100"
+        run: uv run --no-project coverage report --show-missing --skip-covered --fail-under=100
