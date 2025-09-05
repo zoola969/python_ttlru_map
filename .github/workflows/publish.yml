@@ -35,6 +35,8 @@ jobs:
     environment:
       name: pypi
       url: https://pypi.org/p/ttl-dict
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
       - name: Download all the dists
