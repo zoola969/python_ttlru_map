@@ -27,10 +27,10 @@ jobs:
         run: uv sync --locked --no-default-groups --no-install-project --group test
 
       - name: "Run mypy"
-        run: uv run --no-project mypy ttlru_map
+        run: uv run mypy ttlru_map
 
       - name: "Run tests"
-        run: uv run --no-project coverage run -m pytest tests/
+        run: uv run coverage run -m pytest tests/
 
       - name: "Enforce coverage"
-        run: uv run --no-project coverage report --show-missing --skip-covered --fail-under=100
+        run: uv run coverage report --show-missing --skip-covered --fail-under=100
