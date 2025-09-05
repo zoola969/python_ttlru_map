@@ -19,13 +19,13 @@ _TValue = TypeVar("_TValue")
 
 @dataclass(frozen=True)
 class _LinkedListValue(Generic[_TKey]):
-    __slots__ = ("key", "time_")
+    __slots__ = ("expire_at", "key")
 
-    time_: float
+    expire_at: float
     key: _TKey
 
     def __repr__(self) -> str:  # pragma: no cover
-        return f"{self.__class__.__name__}(time_={self.time_}, key={self.key})"
+        return f"{self.__class__.__name__}(expire_at={self.expire_at}, key={self.key})"
 
 
 @dataclass(frozen=True)
@@ -69,7 +69,7 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
         self._ll_head: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
         self._ll_end: DoubleLinkedListNode[_LinkedListValue[_TKey]] | None = None
         self._max_size = max_size
-        self._ttl = ttl
+        self._ttl = ttl.total_seconds() if ttl is not None else None
         self._update_ttl_on_get = update_ttl_on_get
         self._lock = Lock()
 
@@ -97,9 +97,9 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
         """Remove items that have expired."""
         if self._ttl is None:
             return
-        current_time = current_time if current_time is not None else time.time()
+        current_time = current_time if current_time is not None else time.monotonic()
         while self._ll_head is not None:
-            if self._ll_head.value.time_ + self._ttl.total_seconds() >= current_time:
+            if self._ll_head.value.expire_at >= current_time:
                 break
             del self._dict[self._ll_head.value.key]
             self._pop_ll_node(self._ll_head)
@@ -136,9 +136,9 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
             node.prev = self._ll_end
             self._ll_end = node
 
-    def _setitem(self, __key: _TKey, __value: _TValue, time_: float, /) -> None:
+    def _setitem(self, __key: _TKey, __value: _TValue, expire_at: float | None, /) -> None:
         """Set an item in the dictionary and put it to the end of the linked list."""
-        new_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=__key))
+        new_node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=expire_at, key=__key))
 
         if (item := self._dict.get(__key, None)) is not None:
             self._pop_ll_node(item.node)
@@ -155,9 +155,10 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
 
     def __setitem__(self, __key: _TKey, __value: _TValue, /) -> None:
         with self._lock:
-            time_ = time.time()
-            self._setitem(__key, __value, time_)
-            self._update_by_ttl(current_time=time_)
+            current_time = time.monotonic()
+            expire_at = current_time + self._ttl if self._ttl is not None else None
+            self._setitem(__key, __value, expire_at)
+            self._update_by_ttl(current_time=current_time)
             self._update_by_size()
 
     def __delitem__(self, __key: _TKey, /) -> None:
@@ -168,11 +169,11 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
 
     def __getitem__(self, __key: _TKey, /) -> _TValue:
         with self._lock:
-            time_ = time.time()
-            self._update_by_ttl(current_time=time_)
+            current_time = time.monotonic()
+            self._update_by_ttl(current_time=current_time)
             item = self._dict[__key].value
-            if self._update_ttl_on_get:
-                self._setitem(__key, item, time_)
+            if self._update_ttl_on_get and self._ttl is not None:
+                self._setitem(__key, item, current_time + self._ttl)
             return item
 
     def __len__(self) -> int:

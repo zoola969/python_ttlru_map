@@ -10,20 +10,21 @@ from ttlru_map._ttl_map import DoubleLinkedListNode, _DictValue, _LinkedListValu
 
 @pytest.mark.parametrize("update_ttl_on_get", [True, False])
 def test_get(update_ttl_on_get: bool):
-    d = TTLMap(ttl=timedelta(seconds=1000), update_ttl_on_get=update_ttl_on_get)
+    ttl = timedelta(seconds=1000)
+    d = TTLMap(ttl=ttl, update_ttl_on_get=update_ttl_on_get)
     lock_mock = LockMock()
     d._lock = lock_mock
     key = 1
     value = 2
     time_ = 10
 
-    node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=time_, key=key))
     d._dict[key] = _DictValue(node=node, value=value)
     d._ll_head = node
     d._ll_end = node
 
     with (
-        patch("time.time", return_value=time_) as time_mock,
+        patch("time.monotonic", return_value=time_) as time_mock,
         patch.object(
             TTLMap,
             "_setitem",
@@ -35,7 +36,7 @@ def test_get(update_ttl_on_get: bool):
         time_mock.assert_called_once()
         update_by_ttl_mock.assert_called_once_with(current_time=time_)
         if update_ttl_on_get:
-            setitem_mock.assert_called_once_with(key, value, time_)
+            setitem_mock.assert_called_once_with(key, value, time_ + ttl.total_seconds())
         else:
             setitem_mock.assert_not_called()
 
@@ -54,11 +55,11 @@ def test_get__item_expired():
     value = 2
     time_ = 10
 
-    node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=time_, key=key))
     d._dict[key] = _DictValue(node=node, value=value)
     d._ll_head = node
     d._ll_end = node
 
-    with patch("time.time", return_value=time_ + ttl.total_seconds() + 1):  # noqa: SIM117
+    with patch("time.monotonic", return_value=time_ + ttl.total_seconds() + 1):  # noqa: SIM117
         with pytest.raises(KeyError):
             _ = d[key]
