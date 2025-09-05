@@ -9,7 +9,7 @@ def test_put_node_to_end__empty_dict():
     d = TTLMap(ttl=timedelta(seconds=100))
     assert d._ll_head is None
     assert d._ll_end is None
-    node = DoubleLinkedListNode(value=_LinkedListValue(time_=1, key=1))
+    node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=1, key=1))
     d._put_node_to_end(node=node)
 
     assert d._ll_head is node
@@ -31,7 +31,7 @@ def test_put_node_to_end__not_empty_dict():
     assert head_node is d._dict[1].node
     assert end_node is d._dict[2].node
 
-    node = DoubleLinkedListNode(value=_LinkedListValue(time_=1, key=3))
+    node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=1, key=3))
     d._put_node_to_end(node=node)
 
     assert d._ll_head is head_node

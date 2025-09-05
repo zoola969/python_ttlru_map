@@ -8,15 +8,16 @@ from ttlru_map._ttl_map import _DictValue, _LinkedListValue
 
 
 def test_set__first():
-    d = TTLMap(ttl=timedelta(seconds=1000))
+    ttl = timedelta(seconds=1000)
+    d = TTLMap(ttl=ttl)
     lock_mock = LockMock()
     d._lock = lock_mock
     key = 1
     value = 2
     time_ = 10
-    expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    expected_node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=time_ + ttl.total_seconds(), key=key))
     with (
-        patch("time.time", return_value=time_) as time_mock,
+        patch("time.monotonic", return_value=time_) as time_mock,
         patch.object(
             TTLMap,
             "_setitem",
@@ -35,7 +36,7 @@ def test_set__first():
     ):
         d[key] = value
         time_mock.assert_called_once()
-        setitem_mock.assert_called_once_with(key, value, time_)
+        setitem_mock.assert_called_once_with(key, value, time_ + ttl.total_seconds())
         update_by_ttl_mock.assert_called_once_with(current_time=time_)
         update_by_size_mock.assert_called_once()
         lock_mock.__enter__.assert_called_once()
@@ -47,7 +48,8 @@ def test_set__first():
 
 
 def test_set__second():
-    d = TTLMap(ttl=timedelta(seconds=1000))
+    ttl = timedelta(seconds=1000)
+    d = TTLMap(ttl=ttl)
     head_key = 1
     head_value = 2
     d[head_key] = head_value
@@ -57,9 +59,9 @@ def test_set__second():
     new_key = 5
     new_value = 20
     time_ = 10
-    expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=new_key))
+    expected_node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=time_ + ttl.total_seconds(), key=new_key))
     with (
-        patch("time.time", return_value=time_) as time_mock,
+        patch("time.monotonic", return_value=time_) as time_mock,
         patch.object(
             TTLMap,
             "_setitem",
@@ -78,7 +80,7 @@ def test_set__second():
     ):
         d[new_key] = new_value
         time_mock.assert_called_once()
-        setitem_mock.assert_called_once_with(new_key, new_value, time_)
+        setitem_mock.assert_called_once_with(new_key, new_value, time_ + ttl.total_seconds())
         update_by_ttl_mock.assert_called_once_with(current_time=time_)
         update_by_size_mock.assert_called_once()
         lock_mock.__enter__.assert_called_once()
