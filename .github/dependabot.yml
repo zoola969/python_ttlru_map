@@ -17,7 +17,6 @@ updates:
       major:
         update-types:
           - "major"
-    open-pull-requests-limit: 5
     assignees:
       - "zoola969"
     reviewers:
@@ -25,3 +24,16 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "patch"
+          - "minor"
+      major:
+        update-types:
+          - "major"
