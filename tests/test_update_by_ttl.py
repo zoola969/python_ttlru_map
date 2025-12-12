@@ -15,7 +15,7 @@ def test_update_by_ttl__empty_dict():
 def test_update_by_ttl__last_item():
     ttl = timedelta(seconds=100)
     d = TTLMap(ttl=ttl)
-    time_ = time.time() + ttl.total_seconds() + 1
+    time_ = time.monotonic() + ttl.total_seconds() + 1
     d._update_by_ttl(current_time=time_)
     assert d._ll_head is None
     assert d._ll_end is None
@@ -31,11 +31,11 @@ def test_update_by_ttl__expired_head():
     v2 = 2
     set_time_1 = 1
     set_time_2 = set_time_1 + ttl.total_seconds() + 1
-    with patch("time.time", side_effect=[set_time_1, set_time_2]):
+    with patch("time.monotonic", side_effect=[set_time_1, set_time_2]):
         d[k1] = v1
         d[k2] = v2
     d._update_by_ttl(current_time=set_time_2)
-    node_2 = DoubleLinkedListNode(value=_LinkedListValue(time_=set_time_2, key=k2))
+    node_2 = DoubleLinkedListNode(value=_LinkedListValue(expire_at=set_time_2 + ttl.total_seconds(), key=k2))
     assert d._ll_head == node_2
     assert d._ll_end == node_2
     assert d._dict == {k2: _DictValue(node=node_2, value=v2)}
