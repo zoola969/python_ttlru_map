@@ -17,7 +17,7 @@ def test_delete():
     value = 2
     time_ = 10
 
-    node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=time_, key=key))
     item = _DictValue(node=node, value=value)
     d._dict[key] = item
     d._ll_head = node
@@ -54,7 +54,7 @@ def test_delete__item_expired():
     value = 2
     time_ = 10
 
-    node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=time_, key=key))
     d._dict[key] = _DictValue(node=node, value=value)
     d._ll_head = node
     d._ll_end = node
