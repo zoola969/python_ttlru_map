@@ -11,7 +11,7 @@ def test_setitem__new_item():
     time_ = 100.0
     key = 1
     value = 1
-    expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    expected_node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=time_, key=key))
     with (
         patch.object(TTLMap, "_pop_ll_node") as mock_pop_ll_node,
         patch.object(
@@ -33,7 +33,7 @@ def test_setitem__existing_item():
     value = 1
     d[key] = value
     old_node = d._dict[key].node
-    expected_node = DoubleLinkedListNode(value=_LinkedListValue(time_=time_, key=key))
+    expected_node = DoubleLinkedListNode(value=_LinkedListValue(expire_at=time_, key=key))
     with (
         patch.object(TTLMap, "_pop_ll_node") as mock_pop_ll_node,
         patch.object(
