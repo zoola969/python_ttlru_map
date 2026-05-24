@@ -1,7 +1,10 @@
 ci:
-  autoupdate_schedule: weekly
+  autofix_commit_msg: 'chore: auto fixes from pre-commit hooks'
   autofix_prs: false
-  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_commit_msg: 'chore: pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: [conventional-pre-commit]
+default_install_hook_types: [pre-commit, commit-msg]
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -40,3 +43,9 @@ repos:
       - id: toml-sort
         entry: toml-sort
         args: [ pyproject.toml ]
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test]

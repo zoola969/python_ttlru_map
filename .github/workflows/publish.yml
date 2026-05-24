@@ -20,6 +20,9 @@ jobs:
       - name: build
         run: uv build
 
+      - name: Check package metadata
+        run: uvx twine check --strict dist/*
+
       - name: Store package distributions
         uses: actions/upload-artifact@v7
         with:
@@ -33,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/ttl-dict
+      url: https://pypi.org/p/ttlru-map
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 

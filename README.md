@@ -1,7 +1,7 @@
-# Python TTL Dict
+# ttlru-map
 
-[![Documentation Status](https://readthedocs.org/projects/python-ttl-dict/badge/?version=latest)](https://python-ttl-dict.readthedocs.io/en/latest/?badge=latest)
-[![license](https://img.shields.io/github/license/zoola969/python_ttlru_map.svg)](https://github.com/zoola969/python_ttlru_map/blob/main/LICENSE)
+[![Documentation Status](https://readthedocs.org/projects/python-ttlru-map/badge/?version=latest)](https://python-ttlru-map.readthedocs.io/en/latest/?badge=latest)
+[![license](https://img.shields.io/github/license/zoola969/python_ttlru_map.svg)](https://github.com/zoola969/python_ttlru_map/blob/master/LICENSE)
 ![tests](https://github.com/zoola969/python_ttlru_map/actions/workflows/tests.yml/badge.svg?branch=master)
 ![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
 ![Mypy](https://img.shields.io/badge/mypy-checked-blue)
@@ -59,3 +59,8 @@ print(cache.get('key1'))  # None
 print(cache.get('key2'))  # 'value2'
 print(cache.get('key3'))  # 'value3'
 ```
+
+### Contributing
+
+Contributions are welcome! This project uses [Conventional Commits](https://www.conventionalcommits.org/)
+for commit messages and pull-request titles — see [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
