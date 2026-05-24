@@ -2,6 +2,9 @@ version: 2
 updates:
   - package-ecosystem: "uv"
     directory: "/"
+    commit-message:
+      prefix: "build"
+      include: "scope"
     schedule:
       interval: "weekly"
     groups:
@@ -15,6 +18,9 @@ updates:
 
   - package-ecosystem: "github-actions"
     directory: "/"
+    commit-message:
+      prefix: "build"
+      include: "scope"
     schedule:
       interval: "weekly"
     groups:

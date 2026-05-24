@@ -10,7 +10,7 @@ To use **ttlru_map**, first install it using pip:
 
 .. code-block:: console
 
-   (.venv) $ pip install ttlru_map
+   (.venv) $ pip install ttlru-map
 
 Usage example
 _____________

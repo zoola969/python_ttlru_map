@@ -11,7 +11,7 @@ permissions:
 jobs:
   automation:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'zoola969/kb-chatbot'
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'zoola969/python_ttlru_map'
     steps:
       - name: Dependabot metadata
         id: metadata
@@ -20,12 +20,22 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Approve a PR
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+          steps.metadata.outputs.update-type == 'security-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'security-update:semver-minor'
         run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Enable auto-merge for Dependabot PRs
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+          steps.metadata.outputs.update-type == 'security-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'security-update:semver-minor'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
