@@ -10,6 +10,7 @@ permissions:
 jobs:
   validate:
     name: Validate PR title
+    if: ${{ github.actor != 'dependabot[bot]' && github.actor != 'pre-commit-ci[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Lint PR title
