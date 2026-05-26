@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, override
 
 _T = TypeVar("_T")
 
@@ -22,6 +22,7 @@ class DoubleLinkedListNode(Generic[_T]):
     def value(self) -> _T:
         return self._value
 
+    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, DoubleLinkedListNode):
             return False
@@ -29,5 +30,6 @@ class DoubleLinkedListNode(Generic[_T]):
             return True
         return self._value == other._value  # type: ignore[no-any-return]
 
+    @override
     def __repr__(self) -> str:  # pragma: no cover
         return f"{self.__class__.__name__}(value={self._value})"
