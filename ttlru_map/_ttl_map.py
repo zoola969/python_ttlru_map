@@ -4,7 +4,9 @@ import time
 from collections.abc import Hashable, MutableMapping
 from dataclasses import dataclass
 from threading import Lock
-from typing import TYPE_CHECKING, Generic, TypeVar, override
+from typing import TYPE_CHECKING, Generic, TypeVar
+
+from typing_extensions import override
 
 from ttlru_map._exceptions import TTLMapInvalidConfigError
 from ttlru_map._linked_list import DoubleLinkedListNode

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Generic, TypeVar, override
+from typing import Generic, TypeVar
+
+from typing_extensions import override
 
 _T = TypeVar("_T")
 
