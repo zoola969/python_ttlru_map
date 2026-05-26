@@ -60,7 +60,18 @@ line-length = 120
 source = "uv-dynamic-versioning"
 
 [tool.mypy]
+enable_error_code = [
+    "exhaustive-match",
+    "explicit-override",
+    "ignore-without-code",
+    "possibly-undefined",
+    "redundant-expr",
+    "redundant-self",
+    "truthy-bool",
+    "unused-awaitable",
+]
 strict = true
+warn_unreachable = true
 
 [tool.pytest]
 addopts = [
