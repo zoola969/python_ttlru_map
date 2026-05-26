@@ -59,15 +59,19 @@ line-length = 120
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
 
-[tool.isort]
-float_to_top = true
-include_trailing_comma = true
-line_length = 120
-multi_line_output = 3
-use_parentheses = true
-
 [tool.mypy]
+enable_error_code = [
+    "exhaustive-match",
+    "explicit-override",
+    "ignore-without-code",
+    "possibly-undefined",
+    "redundant-expr",
+    "redundant-self",
+    "truthy-bool",
+    "unused-awaitable",
+]
 strict = true
+warn_unreachable = true
 
 [tool.pytest]
 addopts = [
@@ -93,6 +97,7 @@ fixable = ["ALL"]
 ignore = [
     "A003",  # Class attribute {name} is shadowing a python builtin
     "AIR",  # airflow
+    "COM812",  # Trailing comma missing — conflicts with ruff-format
     "CPY",  # flake8-copyright
     "D100",  # Missing docstring in public module
     "D104",  # Missing docstring in public package

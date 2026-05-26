@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from threading import Lock
 from typing import TYPE_CHECKING, Generic, TypeVar
 
+from typing_extensions import override
+
 from ttlru_map._exceptions import TTLMapInvalidConfigError
 from ttlru_map._linked_list import DoubleLinkedListNode
 
@@ -24,6 +26,7 @@ class _LinkedListValue(Generic[_TKey]):
     time_: float
     key: _TKey
 
+    @override
     def __repr__(self) -> str:  # pragma: no cover
         return f"{self.__class__.__name__}(time_={self.time_}, key={self.key})"
 
@@ -34,6 +37,7 @@ class _DictValue(Generic[_TKey, _TValue]):
     node: DoubleLinkedListNode[_LinkedListValue[_TKey]]
     value: _TValue
 
+    @override
     def __repr__(self) -> str:  # pragma: no cover
         return f"{self.__class__.__name__}(node={self.node}, value={self.value})"
 
@@ -153,6 +157,7 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
         del self._dict[item.node.value.key]
         self._pop_ll_node(item.node)
 
+    @override
     def __setitem__(self, __key: _TKey, __value: _TValue, /) -> None:
         with self._lock:
             time_ = time.time()
@@ -160,12 +165,14 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
             self._update_by_ttl(current_time=time_)
             self._update_by_size()
 
+    @override
     def __delitem__(self, __key: _TKey, /) -> None:
         with self._lock:
             item = self._dict[__key]
             self._delitem(item)
             self._update_by_ttl()
 
+    @override
     def __getitem__(self, __key: _TKey, /) -> _TValue:
         with self._lock:
             time_ = time.time()
@@ -175,10 +182,12 @@ class TTLMap(MutableMapping[_TKey, _TValue]):
                 self._setitem(__key, item, time_)
             return item
 
+    @override
     def __len__(self) -> int:
         with self._lock:
             self._update_by_ttl()
             return len(self._dict)
 
+    @override
     def __iter__(self) -> Iterator[_TKey]:
         return iter(self._dict)
