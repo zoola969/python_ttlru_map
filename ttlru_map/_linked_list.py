@@ -6,7 +6,6 @@ _T = TypeVar("_T")
 
 
 class DoubleLinkedListNode(Generic[_T]):
-
     __slots__ = (
         "_value",
         "next",
