@@ -56,6 +56,9 @@ Repository = "https://github.com/zoola969/python_ttlru_map.git"
 color = true
 line-length = 120
 
+[tool.coverage.run]
+source = ["ttlru_map"]
+
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
 
