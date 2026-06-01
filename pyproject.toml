@@ -91,6 +91,7 @@ show-fixes = true
 allowed-confusables = ["ρ", "−", "∗"]
 extend-safe-fixes = [
     "ANN204",
+    "EM101",
     "UP007",
 ]
 fixable = ["ALL"]
