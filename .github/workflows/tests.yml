@@ -33,6 +33,32 @@ jobs:
       - name: "Install dependencies"
         run: uv sync --locked --no-default-groups --no-install-project --group test
 
+      # Restoring `.mypy_cache` drops a cold mypy run to well under a second,
+      # because incremental mode re-checks only the files whose *contents*
+      # changed. Checkout gives every file a fresh mtime, which mypy tolerates
+      # -- it falls back to comparing hashes and finds the cached results still
+      # valid.
+      #
+      # The key carries the interpreter version because this is a matrix build:
+      # mypy's results depend on the Python version it analyses under, and
+      # without it the six jobs would race for one entry. `uv.lock` pins the
+      # mypy version and `pyproject.toml` holds its config, so either changing
+      # invalidates the cache rather than silently reusing results computed
+      # under different rules. `github.sha` keeps the key unique per run so each
+      # build refreshes the entry (Actions cache entries are immutable, so a key
+      # that already exists is never rewritten), while `restore-keys` falls back
+      # to the newest cache for the same version+lock+config.
+      #
+      # This pays off only because the workflow also runs on push to `master`:
+      # a cache written by a PR run is scoped to that PR, and only one written
+      # on the default branch is readable by every new branch.
+      - uses: actions/cache@v6
+        with:
+          path: .mypy_cache
+          key: mypy-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('uv.lock', 'pyproject.toml') }}-${{ github.sha }}
+          restore-keys: |
+            mypy-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('uv.lock', 'pyproject.toml') }}-
+
       - name: "Run mypy"
         run: uv run mypy ttlru_map
 
