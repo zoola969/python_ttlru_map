@@ -25,13 +25,13 @@ repos:
     hooks:
       - id: add-trailing-comma
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.16.3'
+    rev: 'v0.16.10'
     hooks:
       - id: ruff
         args: [ --fix, --exit-non-zero-on-fix ]
       - id: ruff-format
   - repo: https://github.com/pappasam/toml-sort
-    rev: v0.24.4
+    rev: v0.25.0
     hooks:
       - id: toml-sort
         entry: toml-sort
